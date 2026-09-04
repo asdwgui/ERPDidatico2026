@@ -16,10 +16,14 @@ public class Main {
         Usuario logado = estoque.autenticar(usuarioLogin, senha);
         if (logado == null) {
             System.out.println("Login inválido");
+            LogAuditoria.registrar(usuarioLogin, "LOGIN_FALHOU", "Tentativa de login inválida");  // NOVA LINHA
             return;
         }
         String role = logado.getRole();
         System.out.println("Bem-vindo, " + logado.getUsername() + " (" + role + ")");
+
+        estoque.setUsuarioAtual(logado.getUsername());
+        LogAuditoria.registrar(logado.getUsername(), "LOGIN", "Papel=" + role);
 
         while (true) {
             System.out.println("\nMenu:");
@@ -64,6 +68,7 @@ public class Main {
                         estoque.listaPessoas();
                     } else {
                         System.out.println("Acesso negado: essa função envolve dados pessoais e é restrita ao Admin.");
+                        LogAuditoria.registrar(logado.getUsername(), "ACESSO_NEGADO", "Tentou listar pessoas");
                     }
                     break;
                 case 9:
@@ -71,6 +76,7 @@ public class Main {
                         estoque.cadastrarUsuario(scanner);
                     } else {
                         System.out.println("Acesso negado: só Admin pode cadastrar usuários.");
+                        LogAuditoria.registrar(logado.getUsername(), "ACESSO_NEGADO", "Tentou cadastrar usuário");
                     }
                     break;
                 case 10:

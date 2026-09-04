@@ -8,6 +8,11 @@ public class Estoque {
 	private List<Titulo> titulos;
 	private List<Pessoa> pessoas;
 	private List<Usuario> usuarios;
+	private String usuarioAtual = "Desconhecido";
+
+	public void setUsuarioAtual(String usuario) {
+		this.usuarioAtual = usuario;
+	}
 
 	private static final String PRODUTOS_ARQUIVO = "produtos.txt";
 	private static final String TITULOS_ARQUIVO = "titulos.txt";
@@ -37,7 +42,7 @@ public class Estoque {
 		Pessoa pessoa = new Pessoa(id, tipo, nome);
 		pessoas.add(pessoa);
 		savePessoas();
-		LogAuditoria.registrar("CADASTRO_PESSOA", "ID=" + id + ", Nome=" + nome);
+		LogAuditoria.registrar(usuarioAtual, "CADASTRO_PESSOA", "ID=" + id + ", Nome=" + nome);
 		System.out.println("Pessoa adicionada com sucesso.");
 	}
 
@@ -53,7 +58,7 @@ public class Estoque {
 		Produto produto = new Produto(id, nome, preco);
 		produtos.add(produto);
 		saveProdutos();
-		LogAuditoria.registrar("CADASTRO_PRODUTO", "ID=" + id + ", Nome=" + nome);
+		LogAuditoria.registrar(usuarioAtual, "CADASTRO_PRODUTO", "ID=" + id + ", Nome=" + nome);
 		System.out.println("Produto adicionado com sucesso.");
 	}
 
@@ -94,7 +99,7 @@ public class Estoque {
 					"a pagar");
 			titulos.add(titulo);
 			saveTitulos();
-			LogAuditoria.registrar("COMPRA", "Produto=" + produtoId + ", Fornecedor=" + fornecedor.getId());
+			LogAuditoria.registrar(usuarioAtual, "COMPRA", "Produto=" + produtoId + ", Fornecedor=" + fornecedor.getId());
 			System.out.println("Compra registrada. Título a pagar gerado: " + titulo.getId());
 		} else {
 			System.out.println("Produto não encontrado.");
@@ -124,7 +129,7 @@ public class Estoque {
 					"a receber");
 			titulos.add(titulo);
 			saveTitulos();
-			LogAuditoria.registrar("VENDA", "Produto=" + produtoId + ", Cliente=" + cliente.getId());
+			LogAuditoria.registrar(usuarioAtual, "VENDA", "Produto=" + produtoId + ", Cliente=" + cliente.getId());
 			System.out.println("Venda registrada. Título a receber gerado: " + titulo.getId());
 		} else {
 			System.out.println("Produto não encontrado.");
@@ -146,7 +151,7 @@ public class Estoque {
 		if (titulo != null) {
 			titulo.setPaga(true);
 			saveTitulos();
-			LogAuditoria.registrar("PAGAMENTO", "Titulo=" + tituloId);
+			LogAuditoria.registrar(usuarioAtual, "PAGAMENTO", "Titulo=" + tituloId);
 			System.out.println("Título pago com sucesso.");
 		} else {
 			System.out.println("Título não encontrado.");

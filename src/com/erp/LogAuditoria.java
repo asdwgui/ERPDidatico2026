@@ -10,10 +10,10 @@ public class LogAuditoria {
 
     private static final String ARQUIVO_LOG = "auditoria.log";
 
-    public static void registrar(String acao, String detalhe) {
+    public static void registrar(String usuario, String acao, String detalhe) {
         String timestamp = LocalDateTime.now()
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        String linha = "[" + timestamp + "] " + acao + " - " + detalhe;
+        String linha = "[" + timestamp + "] Usuário=" + usuario + " - " + acao + " - " + detalhe;
 
         try (PrintWriter writer = new PrintWriter(new FileWriter(ARQUIVO_LOG, true))) {
             writer.println(linha);
