@@ -1,35 +1,31 @@
 package com.erp;
 
-public class Pessoa {
-    private String id;
-    private int tipo; // 1 - Cliente, 2 - Fornecedor, 3 - Funcionario
-    private String nome;
+public class Usuario {
+    private String username;
+    private String senhaHash;
+    private String role; // "Admin" ou "Operador"
 
-    public Pessoa(String id, int tipo, String nome) {
-        this.id = id;
-        this.tipo = tipo;
-        this.nome = nome;
+    public Usuario(String username, String senhaHash, String role) {
+        this.username = username;
+        this.senhaHash = senhaHash;
+        this.role = role;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public int getTipo() {
-        return tipo;
-    }
-
-    public String getNome() {
-        return nome;
-    }
+    public String getUsername() { return username; }
+    public String getSenhaHash() { return senhaHash; }
+    public String getRole() { return role; }
 
     @Override
     public String toString() {
-        return id + "," + tipo + "," + nome;
+        return username + "," + senhaHash + "," + role;
     }
 
-    public static Pessoa fromString(String str) {
-        String[] parts = str.split(",");
-        return new Pessoa(parts[0], Integer.parseInt(parts[1]), parts[2]);
+    public static Usuario fromString(String str) {
+        String[] p = str.split(",");
+        return new Usuario(p[0], p[1], p[2]);
+    }
+
+    public static String hash(String senha) {
+        return String.valueOf(senha.hashCode());
     }
 }
