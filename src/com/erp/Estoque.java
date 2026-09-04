@@ -7,18 +7,22 @@ public class Estoque {
 	private List<Produto> produtos;
 	private List<Titulo> titulos;
 	private List<Pessoa> pessoas;
+	private List<Usuario> usuarios;
 
 	private static final String PRODUTOS_ARQUIVO = "produtos.txt";
 	private static final String TITULOS_ARQUIVO = "titulos.txt";
 	private static final String PESSOAS_ARQUIVO = "pessoas.txt";
+	private static final String USUARIOS_ARQUIVO = "usuarios.txt";
 
 	public Estoque() throws IOException {
 		produtos = new ArrayList<>();
 		titulos = new ArrayList<>();
 		pessoas = new ArrayList<>();
+		usuarios = new ArrayList<>();
 		carregaProduto();
 		carregaTitulos();
 		carregaPessoas();
+		carregaUsuarios();
 	}
 
 	public void addPessoa(Scanner scanner) throws IOException {
@@ -33,6 +37,7 @@ public class Estoque {
 		Pessoa pessoa = new Pessoa(id, tipo, nome);
 		pessoas.add(pessoa);
 		savePessoas();
+		LogAuditoria.registrar("CADASTRO_PESSOA", "ID=" + id + ", Nome=" + nome);
 		System.out.println("Pessoa adicionada com sucesso.");
 	}
 
@@ -48,6 +53,7 @@ public class Estoque {
 		Produto produto = new Produto(id, nome, preco);
 		produtos.add(produto);
 		saveProdutos();
+		LogAuditoria.registrar("CADASTRO_PRODUTO", "ID=" + id + ", Nome=" + nome);
 		System.out.println("Produto adicionado com sucesso.");
 	}
 
@@ -59,7 +65,7 @@ public class Estoque {
 	}
 
 	public void listaPessoas() {
-		System.out.println("Produtos:");
+		System.out.println("Pessoas:");
 		for (Pessoa pessoa : pessoas) {
 			System.out.println(pessoa.getId() + " - " + pessoa.getNome() + " - Tipo: " + pessoa.getTipo());
 		}
@@ -88,6 +94,7 @@ public class Estoque {
 					"a pagar");
 			titulos.add(titulo);
 			saveTitulos();
+			LogAuditoria.registrar("COMPRA", "Produto=" + produtoId + ", Fornecedor=" + fornecedor.getId());
 			System.out.println("Compra registrada. Título a pagar gerado: " + titulo.getId());
 		} else {
 			System.out.println("Produto não encontrado.");
@@ -117,6 +124,7 @@ public class Estoque {
 					"a receber");
 			titulos.add(titulo);
 			saveTitulos();
+			LogAuditoria.registrar("VENDA", "Produto=" + produtoId + ", Cliente=" + cliente.getId());
 			System.out.println("Venda registrada. Título a receber gerado: " + titulo.getId());
 		} else {
 			System.out.println("Produto não encontrado.");
@@ -138,6 +146,7 @@ public class Estoque {
 		if (titulo != null) {
 			titulo.setPaga(true);
 			saveTitulos();
+			LogAuditoria.registrar("PAGAMENTO", "Titulo=" + tituloId);
 			System.out.println("Título pago com sucesso.");
 		} else {
 			System.out.println("Título não encontrado.");
@@ -171,7 +180,7 @@ public class Estoque {
 			try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 				String line;
 				while ((line = reader.readLine()) != null) {
-					produtos.add(Produto.fromString(line));
+					if (!line.isBlank()) produtos.add(Produto.fromString(line));
 				}
 			}
 		}
@@ -183,7 +192,7 @@ public class Estoque {
 			try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 				String line;
 				while ((line = reader.readLine()) != null) {
-					titulos.add(Titulo.fromString(line));
+					if (!line.isBlank()) titulos.add(Titulo.fromString(line));
 				}
 			}
 		}
@@ -195,10 +204,63 @@ public class Estoque {
 			try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 				String line;
 				while ((line = reader.readLine()) != null) {
-					pessoas.add(Pessoa.fromString(line));
+					if (!line.isBlank()) pessoas.add(Pessoa.fromString(line));
 				}
 			}
 		}
+	}
+
+	private void carregaUsuarios() throws IOException {
+		File file = new File(USUARIOS_ARQUIVO);
+		if (file.exists()) {
+			try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+				String line;
+				while ((line = reader.readLine()) != null) {
+					if (!line.isBlank()) usuarios.add(Usuario.fromString(line));
+				}
+			}
+		} else {
+			Usuario admin = new Usuario("admin", Usuario.hash("admin123"), "Admin");
+			Usuario operador = new Usuario("operador", Usuario.hash("operador123"), "Operador");
+			usuarios.add(admin);
+			usuarios.add(operador);
+			saveUsuarios();
+			System.out.println("Usuários criados -> admin/admin123 (Admin) e operador/operador123 (Operador)");
+		}
+	}
+
+	public Usuario autenticar(String username, String senha) {
+		String hashDigitado = Usuario.hash(senha);
+		for (Usuario u : usuarios) {
+			if (u.getUsername().equals(username) && u.getSenhaHash().equals(hashDigitado)) {
+				return u;
+			}
+		}
+		return null;
+	}
+
+	public void cadastrarUsuario(Scanner scanner) throws IOException {
+		System.out.print("Novo login: ");
+		String username = scanner.nextLine();
+
+		for (Usuario u : usuarios) {
+			if (u.getUsername().equals(username)) {
+				System.out.println("Já existe um usuário com esse login.");
+				return;
+			}
+		}
+
+		System.out.print("Senha: ");
+		String senha = scanner.nextLine();
+		System.out.print("Papel (1-Admin, 2-Operador): ");
+		int papel = scanner.nextInt();
+		scanner.nextLine();
+		String role = (papel == 1) ? "Admin" : "Operador";
+
+		Usuario novo = new Usuario(username, Usuario.hash(senha), role);
+		usuarios.add(novo);
+		saveUsuarios();
+		System.out.println("Usuário '" + username + "' cadastrado como " + role + ".");
 	}
 
 	private void saveProdutos() throws IOException {
@@ -223,6 +285,15 @@ public class Estoque {
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(PESSOAS_ARQUIVO))) {
 			for (Pessoa pessoa : pessoas) {
 				writer.write(pessoa.toString());
+				writer.newLine();
+			}
+		}
+	}
+
+	private void saveUsuarios() throws IOException {
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(USUARIOS_ARQUIVO))) {
+			for (Usuario u : usuarios) {
+				writer.write(u.toString());
 				writer.newLine();
 			}
 		}
