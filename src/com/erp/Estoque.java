@@ -38,8 +38,16 @@ public class Estoque {
 		System.out.print("Tipo de Pessoa (1-Cliente, 2-Fornecedor, 3-Funcionário): ");
 		int tipo = scanner.nextInt();
 		scanner.nextLine();
-
-		Pessoa pessoa = new Pessoa(id, tipo, nome);
+		System.out.print("Base Legal (1-Consentimento, 2-Execução de Contrato, 3-Obrigação Legal): ");
+		int opcaoBase = scanner.nextInt();
+		scanner.nextLine();
+		String baseLegal = switch (opcaoBase) {
+			case 1 -> "Consentimento";
+			case 2 -> "Execução de Contrato";
+			case 3 -> "Obrigação Legal";
+			default -> "Não informado";
+		};
+		Pessoa pessoa = new Pessoa(id, tipo, nome, baseLegal);
 		pessoas.add(pessoa);
 		savePessoas();
 		LogAuditoria.registrar(usuarioAtual, "CADASTRO_PESSOA", "ID=" + id + ", Nome=" + nome);
@@ -70,9 +78,10 @@ public class Estoque {
 	}
 
 	public void listaPessoas() {
-		System.out.println("Pessoas:");
+		System.out.println("Produtos:");
 		for (Pessoa pessoa : pessoas) {
-			System.out.println(pessoa.getId() + " - " + pessoa.getNome() + " - Tipo: " + pessoa.getTipo());
+			System.out.println(pessoa.getId() + " - " + pessoa.getNome() + " - Tipo: "
+					+ pessoa.getTipo() + " - Base Legal: " + pessoa.getBaseLegal());
 		}
 	}
 
