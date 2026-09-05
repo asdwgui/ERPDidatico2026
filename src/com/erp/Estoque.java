@@ -85,6 +85,28 @@ public class Estoque {
 		}
 	}
 
+	public void anonimizarPessoa(Scanner scanner) throws IOException {
+		System.out.print("ID da Pessoa a anonimizar: ");
+		String id = scanner.nextLine();
+
+		Pessoa pessoa = null;
+		for (Pessoa p : pessoas) {
+			if (p.getId().equals(id)) {
+				pessoa = p;
+				break;
+			}
+		}
+
+		if (pessoa != null) {
+			pessoa.anonimizar();
+			savePessoas();
+			LogAuditoria.registrar(usuarioAtual, "ANONIMIZACAO_PESSOA", "ID=" + id);
+			System.out.println("Dados da pessoa anonimizados com sucesso.");
+		} else {
+			System.out.println("Pessoa não encontrada.");
+		}
+	}
+
 	public void compraProduto(Scanner scanner) throws IOException {
 		System.out.print("ID do Produto a comprar: ");
 		String produtoId = scanner.nextLine();

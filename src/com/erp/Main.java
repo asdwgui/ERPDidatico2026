@@ -37,6 +37,7 @@ public class Main {
             System.out.println("8. Listar Pessoas [Acesso Restrito]");
             System.out.println("9. Cadastrar Usuário [Acesso Restrito]");
             System.out.println("10. Sair");
+            System.out.println("11. Anonimizar Dados de Pessoa [Acesso Restrito]");
             System.out.print("Escolha uma opção: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
@@ -82,6 +83,14 @@ public class Main {
                 case 10:
                     System.out.println("Saindo...");
                     return;
+                case 11:
+                    if (role.equals("Admin")) {
+                        estoque.anonimizarPessoa(scanner);
+                    } else {
+                        System.out.println("Acesso negado: só Admin pode anonimizar dados.");
+                        LogAuditoria.registrar(logado.getUsername(), "ACESSO_NEGADO", "Tentou anonimizar pessoa");
+                    }
+                    break;
                 default:
                     System.out.println("Opção inválida. Tente novamente.");
             }
