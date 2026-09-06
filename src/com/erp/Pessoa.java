@@ -4,7 +4,7 @@ public class Pessoa {
     private String id;
     private int tipo; // 1 - Cliente, 2 - Fornecedor, 3 - Funcionario
     private String nome;
-    private String baseLegal; // NOVO: LGPD
+    private String baseLegal;
 
     public Pessoa(String id, int tipo, String nome, String baseLegal) {
         this.id = id;
