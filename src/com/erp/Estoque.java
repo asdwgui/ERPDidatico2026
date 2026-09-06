@@ -4,10 +4,10 @@ import java.io.*;
 import java.util.*;
 
 public class Estoque {
-	private List<Produto> produtos;
-	private List<Titulo> titulos;
-	private List<Pessoa> pessoas;
-	private List<Usuario> usuarios;
+	private final List<Produto> produtos;
+	private final List<Titulo> titulos;
+	private final List<Pessoa> pessoas;
+	private final List<Usuario> usuarios;
 	private String usuarioAtual = "Desconhecido";
 
 	public void setUsuarioAtual(String usuario) {
@@ -78,7 +78,7 @@ public class Estoque {
 	}
 
 	public void listaPessoas() {
-		System.out.println("Produtos:");
+		System.out.println("Pessoas:");
 		for (Pessoa pessoa : pessoas) {
 			System.out.println(pessoa.getId() + " - " + pessoa.getNome() + " - Tipo: "
 					+ pessoa.getTipo() + " - Base Legal: " + pessoa.getBaseLegal());

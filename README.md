@@ -22,6 +22,12 @@ Projeto da disciplina de Administração — implementação de um ERP simples e
 3. Faça login com um usuário e senha cadastrados em `usuarios.txt` (ex: `admin`).
 4. Navegue pelo menu — as opções marcadas como **[Acesso Restrito]** só funcionam para o papel `Admin`.
 
+## Primeiro acesso
+
+Se não houver `usuarios.txt`, o sistema cria automaticamente:
+- Admin: admin / admin123
+- Operador: operador / operador123
+
 ### Testando o log de auditoria
 
 Após usar o sistema, um arquivo `auditoria.log` é criado na raiz do projeto, com uma linha por ação relevante:
