@@ -13,10 +13,22 @@ public class Pessoa {
         this.baseLegal = baseLegal;
     }
 
-    public String getId() { return id; }
-    public int getTipo() { return tipo; }
-    public String getNome() { return nome; }
-    public String getBaseLegal() { return baseLegal; }
+    public String getId() { 
+        return id; 
+    }
+    
+    public int getTipo() { 
+        return tipo; 
+    }
+    
+    public String getNome() { 
+        return nome; 
+    }
+    
+    public String getBaseLegal() {
+        return baseLegal; 
+    }
+    
     public void anonimizar() {
         this.nome = "ANONIMIZADO";
     }
