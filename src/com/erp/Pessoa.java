@@ -1,7 +1,7 @@
 package com.erp;
 
 public class Pessoa {
-    private String aid;
+    private String id;
     private int tipo; // 1 - Cliente, 2 - Fornecedor, 3 - Funcionario
     private String nome;
     private String baseLegal;
@@ -13,22 +13,22 @@ public class Pessoa {
         this.baseLegal = baseLegal;
     }
 
-    public String getId() {
-        return id;
+    public String getId() { 
+        return id; 
     }
-
-    public int getTipo() {
-        return tipo;
+    
+    public int getTipo() { 
+        return tipo; 
     }
-
-    public String getNome() {
-        return nome;
+    
+    public String getNome() { 
+        return nome; 
     }
-
+    
     public String getBaseLegal() {
-        return baseLegal;
+        return baseLegal; 
     }
-
+    
     public void anonimizar() {
         this.nome = "ANONIMIZADO";
     }
