@@ -1,7 +1,7 @@
 package com.erp;
 
 public class Pessoa {
-    private String id;
+    private String aid;
     private int tipo; // 1 - Cliente, 2 - Fornecedor, 3 - Funcionario
     private String nome;
     private String baseLegal;
