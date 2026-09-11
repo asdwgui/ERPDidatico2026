@@ -2,6 +2,8 @@ package com.erp;
 
 import java.io.*;
 import java.util.*;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 public class Estoque {
 	private final List<Produto> produtos;
@@ -161,10 +163,75 @@ public class Estoque {
 			titulos.add(titulo);
 			saveTitulos();
 			LogAuditoria.registrar(usuarioAtual, "VENDA", "Produto=" + produtoId + ", Cliente=" + cliente.getId());
+			HistoricoVendas.registrarVenda(produtoId);
 			System.out.println("Venda registrada. Título a receber gerado: " + titulo.getId());
 		} else {
 			System.out.println("Produto não encontrado.");
 		}
+	}
+
+	public void preverDemanda(Scanner scanner) throws IOException {
+		System.out.print("ID do Produto para prever demanda: ");
+		String produtoId = scanner.nextLine();
+
+		boolean produtoExiste = produtos.stream().anyMatch(p -> p.getId().equals(produtoId));
+		if (!produtoExiste) {
+			System.out.println("Produto não encontrado.");
+			return;
+		}
+
+		List<String[]> registros = HistoricoVendas.carregarHistorico();
+
+		Map<LocalDate, Integer> vendasPorDia = new TreeMap<>();
+		for (String[] registro : registros) {
+			if (registro[0].equals(produtoId)) {
+				LocalDate data = LocalDate.parse(registro[1]);
+				vendasPorDia.merge(data, 1, Integer::sum);
+			}
+		}
+
+		if (vendasPorDia.size() < 2) {
+			System.out.println("Ainda não há histórico suficiente para prever a demanda desse produto (é preciso vendas em pelo menos 2 dias diferentes).");
+			return;
+		}
+
+		LocalDate primeiroDia = vendasPorDia.keySet().iterator().next();
+		List<Double> xs = new ArrayList<>();
+		List<Double> ys = new ArrayList<>();
+		for (Map.Entry<LocalDate, Integer> entry : vendasPorDia.entrySet()) {
+			long diaIndice = ChronoUnit.DAYS.between(primeiroDia, entry.getKey());
+			xs.add((double) diaIndice);
+			ys.add((double) entry.getValue());
+		}
+
+		double[] coeficientes = regressaoLinear(xs, ys);
+		double m = coeficientes[0];
+		double b = coeficientes[1];
+
+		long proximoDiaIndice = ChronoUnit.DAYS.between(primeiroDia, LocalDate.now()) + 1;
+		double previsao = Math.max(0, m * proximoDiaIndice + b);
+
+		String tendencia = m >= 0 ? "crescimento" : "queda";
+		System.out.println("Tendência de vendas: " + tendencia + " de aproximadamente "
+				+ String.format("%.2f", Math.abs(m)) + " unidades/dia.");
+		System.out.println("Previsão de demanda para amanhã: " + String.format("%.1f", previsao) + " unidades.");
+	}
+
+	private double[] regressaoLinear(List<Double> xs, List<Double> ys) {
+		int n = xs.size();
+		double somaX = 0, somaY = 0, somaXY = 0, somaX2 = 0;
+
+		for (int i = 0; i < n; i++) {
+			somaX += xs.get(i);
+			somaY += ys.get(i);
+			somaXY += xs.get(i) * ys.get(i);
+			somaX2 += xs.get(i) * xs.get(i);
+		}
+
+		double m = (n * somaXY - somaX * somaY) / (n * somaX2 - somaX * somaX);
+		double b = (somaY - m * somaX) / n;
+
+		return new double[]{m, b};
 	}
 
 	public void fazPagamento(Scanner scanner) throws IOException {

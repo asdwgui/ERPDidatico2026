@@ -38,6 +38,7 @@ public class Main {
             System.out.println("9. Cadastrar Usuário [Acesso Restrito]");
             System.out.println("10. Sair");
             System.out.println("11. Anonimizar Dados de Pessoa [Acesso Restrito]");
+            System.out.println("12. Prever Demanda de Produto (Análise Preditiva) [Acesso Restrito]");
             System.out.print("Escolha uma opção: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
@@ -89,6 +90,14 @@ public class Main {
                     } else {
                         System.out.println("Acesso negado: só Admin pode anonimizar dados.");
                         LogAuditoria.registrar(logado.getUsername(), "ACESSO_NEGADO", "Tentou anonimizar pessoa");
+                    }
+                    break;
+                case 12:
+                    if (role.equals("Admin")) {
+                        estoque.preverDemanda(scanner);
+                    } else {
+                        System.out.println("Acesso negado: só admin pode fazer a análise preditiva.");
+                        LogAuditoria.registrar(logado.getUsername(), "ACESSO_NEGADO", "Tentou acessar previsão de demanda");
                     }
                     break;
                 default:
