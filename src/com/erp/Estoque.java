@@ -1,15 +1,18 @@
 package com.erp;
 
 import java.io.*;
-import java.util.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 public class Estoque {
 	private final List<Produto> produtos;
 	private final List<Titulo> titulos;
 	private final List<Pessoa> pessoas;
 	private final List<Usuario> usuarios;
+	private final List<Pedido> pedidos;
 	private String usuarioAtual = "Desconhecido";
 
 	public void setUsuarioAtual(String usuario) {
@@ -20,16 +23,20 @@ public class Estoque {
 	private static final String TITULOS_ARQUIVO = "titulos.txt";
 	private static final String PESSOAS_ARQUIVO = "pessoas.txt";
 	private static final String USUARIOS_ARQUIVO = "usuarios.txt";
+	private static final String PEDIDOS_ARQUIVO = "pedidos.txt";
+	private static final int ESTOQUE_MINIMO = 5;
 
 	public Estoque() throws IOException {
 		produtos = new ArrayList<>();
 		titulos = new ArrayList<>();
 		pessoas = new ArrayList<>();
 		usuarios = new ArrayList<>();
+		pedidos = new ArrayList<>();
 		carregaProduto();
 		carregaTitulos();
 		carregaPessoas();
 		carregaUsuarios();
+		carregaPedidos();
 	}
 
 	public void addPessoa(Scanner scanner) throws IOException {
@@ -64,18 +71,23 @@ public class Estoque {
 		System.out.print("Preço do Produto: ");
 		double preco = scanner.nextDouble();
 		scanner.nextLine();
+		System.out.print("Quantidade inicial em estoque: ");
+		int quantidade = scanner.nextInt();
+		scanner.nextLine();
 
-		Produto produto = new Produto(id, nome, preco);
+		Produto produto = new Produto(id, nome, preco, quantidade);
 		produtos.add(produto);
 		saveProdutos();
-		LogAuditoria.registrar(usuarioAtual, "CADASTRO_PRODUTO", "ID=" + id + ", Nome=" + nome);
+		LogAuditoria.registrar(usuarioAtual, "CADASTRO_PRODUTO", "ID=" + id + ", Nome=" + nome + ", Qtd=" +
+				quantidade);
 		System.out.println("Produto adicionado com sucesso.");
 	}
 
 	public void listaProdutos() {
 		System.out.println("Produtos:");
 		for (Produto produto : produtos) {
-			System.out.println(produto.getId() + " - " + produto.getNome() + " - R$ " + produto.getPreco());
+			System.out.println(produto.getId() + " - " + produto.getNome() + " - R$ " + produto.getPreco()
+					+ " - Estoque: " + produto.getQuantidade());
 		}
 	}
 
@@ -113,13 +125,7 @@ public class Estoque {
 		System.out.print("ID do Produto a comprar: ");
 		String produtoId = scanner.nextLine();
 
-		Produto produto = null;
-		for (Produto p : produtos) {
-			if (p.getId().equals(produtoId)) {
-				produto = p;
-				break;
-			}
-		}
+		Produto produto = buscarProdutoPorId(produtoId);
 
 		if (produto != null) {
 			Pessoa fornecedor = buscarPessoaPorTipo(scanner, 2);
@@ -128,46 +134,101 @@ public class Estoque {
 				return;
 			}
 
-			Titulo titulo = new Titulo(UUID.randomUUID().toString(), produto.getPreco(), false, fornecedor.getId(),
+			System.out.print("Quantidade comprada: ");
+			int qtd = scanner.nextInt();
+			scanner.nextLine();
+			if (qtd <= 0) {
+				System.out.println("Quantidade inválida.");
+				return;
+			}
+			produto.adicionarEstoque(qtd);
+			double total = produto.getPreco() * qtd;
+
+			Titulo titulo = new Titulo(UUID.randomUUID().toString(), total, false, fornecedor.getId(),
 					"a pagar");
 			titulos.add(titulo);
 			saveTitulos();
-			LogAuditoria.registrar(usuarioAtual, "COMPRA", "Produto=" + produtoId + ", Fornecedor=" + fornecedor.getId());
-			System.out.println("Compra registrada. Título a pagar gerado: " + titulo.getId());
+			saveProdutos();
+			LogAuditoria.registrar(usuarioAtual, "COMPRA", "Produto=" + produtoId + ", Qtd=" + qtd
+					+ ", Fornecedor=" + fornecedor.getId());
+			System.out.println("Compra registrada. Estoque atual: " + produto.getQuantidade());
+			System.out.println("Título a pagar gerado: " + titulo.getId());
 		} else {
 			System.out.println("Produto não encontrado.");
 		}
 	}
 
 	public void vendaProduto(Scanner scanner) throws IOException {
-		System.out.print("ID do Produto a vender: ");
-		String produtoId = scanner.nextLine();
+		vendaPorPedido(scanner);
+	}
 
-		Produto produto = null;
-		for (Produto p : produtos) {
-			if (p.getId().equals(produtoId)) {
-				produto = p;
+	private void vendaPorPedido(Scanner scanner) throws IOException {
+		Pessoa cliente = buscarPessoaPorTipo(scanner, 1);
+		if (cliente == null) {
+			System.out.println("Cliente não encontrado.");
+			return;
+		}
+
+		String data = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+		Pedido pedido = new Pedido("Pedido " + (pedidos.size() + 1), cliente.getId(), data);
+
+		System.out.println();
+		System.out.println("Ponto de Venda - " + pedido.getId());
+		while (true) {
+			System.out.print("ID do Produto (ou FIM para fechar o pedido): ");
+			String produtoId = scanner.nextLine();
+			if (produtoId.equalsIgnoreCase("FIM")) {
 				break;
 			}
-		}
 
-		if (produto != null) {
-			Pessoa cliente = buscarPessoaPorTipo(scanner, 1);
-			if (cliente == null) {
-				System.out.println("Cliente não encontrado.");
-				return;
+			Produto produto = buscarProdutoPorId(produtoId);
+			if (produto == null) {
+				System.out.println("Produto não encontrado.");
+				continue;
 			}
 
-			Titulo titulo = new Titulo(UUID.randomUUID().toString(), produto.getPreco(), false, cliente.getId(),
-					"a receber");
-			titulos.add(titulo);
-			saveTitulos();
-			LogAuditoria.registrar(usuarioAtual, "VENDA", "Produto=" + produtoId + ", Cliente=" + cliente.getId());
-			HistoricoVendas.registrarVenda(produtoId);
-			System.out.println("Venda registrada. Título a receber gerado: " + titulo.getId());
-		} else {
-			System.out.println("Produto não encontrado.");
+			System.out.print("Quantidade: ");
+			int qtd = scanner.nextInt();
+			scanner.nextLine();
+			if (qtd <= 0) {
+				System.out.println("Quantidade inválida.");
+				continue;
+			}
+
+			int jaNoPedido = pedido.quantidadeDoProduto(produtoId);
+			if (qtd + jaNoPedido > produto.getQuantidade()) {
+				System.out.println("Estoque insuficiente. Disponível: " + (produto.getQuantidade() - jaNoPedido));
+				continue;
+			}
+
+			pedido.adicionarItem(new ItemPedido(produtoId, qtd, produto.getPreco()));
+			System.out.println("Item adicionado. Total parcial: R$ " + String.format("%.2f", pedido.getTotal()));}
+
+		if (pedido.getItens().isEmpty()) {
+			System.out.println("Pedido cancelado: nenhum produto foi adicionado.");
+			return;
 		}
+
+		for (ItemPedido item : pedido.getItens()) {
+			Produto produto = buscarProdutoPorId(item.getProdutoId());
+			produto.removerEstoque(item.getQuantidade());
+			HistoricoVendas.registrarVenda(item.getProdutoId(), item.getQuantidade());
+		}
+
+
+		Titulo titulo = new Titulo(UUID.randomUUID().toString(), pedido.getTotal(), false, cliente.getId(), "a receber");
+
+		titulos.add(titulo);
+		pedidos.add(pedido);
+
+		saveProdutos();
+		saveTitulos();
+		savePedidos();
+		LogAuditoria.registrar(usuarioAtual, "VENDA_PEDIDO", "Pedido=" + pedido.getId() + ", Cliente=" + cliente.getId() + ", Itens=" + pedido.getItens().size() + ", Total=" + pedido.getTotal());
+
+		System.out.println(pedido.getId() + " finalizado! Total: R$ " + String.format("%.2f", pedido.getTotal()));
+
+		System.out.println("Título a receber gerado: " + titulo.getId());
 	}
 
 	public void preverDemanda(Scanner scanner) throws IOException {
@@ -184,9 +245,16 @@ public class Estoque {
 
 		Map<LocalDate, Integer> vendasPorDia = new TreeMap<>();
 		for (String[] registro : registros) {
-			if (registro[0].equals(produtoId)) {
-				LocalDate data = LocalDate.parse(registro[1]);
-				vendasPorDia.merge(data, 1, Integer::sum);
+			if (registro.length < 3 || !registro[0].equals(produtoId)) {
+				continue;
+			}
+
+			try {
+				int quantidade = Integer.parseInt(registro[1].trim());
+				LocalDate data = LocalDate.parse(registro[2].trim());
+				vendasPorDia.merge(data, quantidade, Integer::sum);
+			} catch (NumberFormatException | java.time.format.DateTimeParseException e) {
+				System.out.println("Aviso: linha de histórico ignorada por formato inválido.");
 			}
 		}
 
@@ -256,6 +324,33 @@ public class Estoque {
 		}
 	}
 
+	public void relatorioInventario() {
+		System.out.println();
+		System.out.println("RELATÓRIO DE INVENTÁRIO:");
+		double valorTotal = 0;
+		int produtosEmAlerta = 0;
+
+		for (Produto p : produtos) {
+			double valorEmEstoque = p.getPreco() * p.getQuantidade();
+			valorTotal += valorEmEstoque;
+
+			String alerta = "";
+			if (p.getQuantidade() <= ESTOQUE_MINIMO) {
+				alerta = " (ESTOQUE BAIXO)";
+				produtosEmAlerta++;
+			}
+			System.out.println(p.getId() + " - " + p.getNome() + " | Qtd: " + p.getQuantidade()
+					+ " | Valor em estoque: R$ " + String.format("%.2f", valorEmEstoque) + alerta);
+
+		}
+
+		System.out.println("----------------------------------------------------------------------");
+		System.out.println("Produtos cadastrados: " + produtos.size());
+		System.out.println("Produtos com estoque baixo (Menor ou igual a " + ESTOQUE_MINIMO + "): " + produtosEmAlerta);
+		System.out.println("Valor total do inventário: R$ " + String.format("%.2f", valorTotal));
+		LogAuditoria.registrar(usuarioAtual, "RELATORIO_INVENTARIO", "Produtos=" + produtos.size());
+	}
+
 	public void listarTitulosDeDestaque() {
 		System.out.println("Títulos em Aberto:");
 		for (Titulo title : titulos) {
@@ -266,11 +361,39 @@ public class Estoque {
 		}
 	}
 
+	public void listarPedidos() {
+		System.out.println();
+		System.out.println("Pedidos:");
+		if (pedidos.isEmpty()) {
+			System.out.println("Nenhum pedido registrado.");
+			return;
+		}
+		for (Pedido pedido : pedidos) {
+			System.out.println(pedido.getId() + " - Data: " + pedido.getData() + " - Cliente ID: "
+					+ pedido.getClienteId() + " - Total: R$ " + String.format("%.2f", pedido.getTotal()));
+			for (ItemPedido item : pedido.getItens()) {
+				Produto produto = buscarProdutoPorId(item.getProdutoId());
+				String nome = (produto != null) ? produto.getNome() : "(produto não encontrado)";
+				System.out.println("    " + item.getQuantidade() + "x " + nome + " - R$ " + item.getPrecoUnitario() + " cada - Subtotal: R$ " + String.format("%.2f", item.getSubtotal()));
+			}
+			System.out.println();
+		}
+	}
+
 	private Pessoa buscarPessoaPorTipo(Scanner scanner, int tipo) {
 		System.out.print("ID da Pessoa (tipo " + tipo + "): ");
 		String id = scanner.nextLine();
 		for (Pessoa p : pessoas) {
 			if (p.getId().equals(id) && p.getTipo() == tipo) {
+				return p;
+			}
+		}
+		return null;
+	}
+
+	private Produto buscarProdutoPorId(String id) {
+		for (Produto p : produtos) {
+			if (p.getId().equals(id)) {
 				return p;
 			}
 		}
@@ -296,6 +419,18 @@ public class Estoque {
 				String line;
 				while ((line = reader.readLine()) != null) {
 					if (!line.isBlank()) titulos.add(Titulo.fromString(line));
+				}
+			}
+		}
+	}
+
+	private void carregaPedidos() throws IOException {
+		File file = new File(PEDIDOS_ARQUIVO);
+		if (file.exists()) {
+			try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+				String line;
+				while ((line = reader.readLine()) != null) {
+					if (!line.isBlank()) pedidos.add(Pedido.fromString(line));
 				}
 			}
 		}
@@ -379,6 +514,15 @@ public class Estoque {
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(TITULOS_ARQUIVO))) {
 			for (Titulo title : titulos) {
 				writer.write(title.toString());
+				writer.newLine();
+			}
+		}
+	}
+
+	private void savePedidos() throws IOException {
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(PEDIDOS_ARQUIVO))) {
+			for (Pedido pedido : pedidos) {
+				writer.write(pedido.toString());
 				writer.newLine();
 			}
 		}
