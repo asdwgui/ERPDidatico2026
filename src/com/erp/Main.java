@@ -16,7 +16,7 @@ public class Main {
         Usuario logado = estoque.autenticar(usuarioLogin, senha);
         if (logado == null) {
             System.out.println("Login inválido");
-            LogAuditoria.registrar(usuarioLogin, "LOGIN_FALHOU", "Tentativa de login inválida");  // NOVA LINHA
+            LogAuditoria.registrar(usuarioLogin, "LOGIN_FALHOU", "Tentativa de login inválida");
             return;
         }
         String role = logado.getRole();
@@ -30,15 +30,17 @@ public class Main {
             System.out.println("1. Adicionar Produto");
             System.out.println("2. Listar Produtos");
             System.out.println("3. Comprar Produto (Fornecedor)");
-            System.out.println("4. Vender Produto (Cliente)");
-            System.out.println("5. Efetuar Pagamento");
-            System.out.println("6. Listar Títulos em Aberto");
-            System.out.println("7. Cadastrar Pessoa");
-            System.out.println("8. Listar Pessoas [Acesso Restrito]");
-            System.out.println("9. Cadastrar Usuário [Acesso Restrito]");
-            System.out.println("10. Anonimizar Dados de Pessoa [Acesso Restrito]");
-            System.out.println("11. Sair");
-            System.out.println("12. Prever Demanda de Produto (Análise Preditiva) [Acesso Restrito]");
+            System.out.println("4. Ponto de Venda");
+            System.out.println("5. Listar Pedidos");
+            System.out.println("6. Relatório de Inventário");
+            System.out.println("7. Efetuar Pagamento");
+            System.out.println("8. Listar Títulos em Aberto");
+            System.out.println("9. Cadastrar Pessoa");
+            System.out.println("10. Prever Demanda de Produto [Acesso Restrito]");
+            System.out.println("11. Listar Pessoas [Acesso Restrito]");
+            System.out.println("12. Cadastrar Usuário [Acesso Restrito]");
+            System.out.println("13. Anonimizar Dados de Pessoa [Acesso Restrito]");
+            System.out.println("14. Sair");
             System.out.print("Escolha uma opção: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
@@ -57,42 +59,21 @@ public class Main {
                     estoque.vendaProduto(scanner);
                     break;
                 case 5:
-                    estoque.fazPagamento(scanner);
+                    estoque.listarPedidos();
                     break;
                 case 6:
-                    estoque.listarTitulosDeDestaque();
+                    estoque.relatorioInventario();
                     break;
                 case 7:
-                    estoque.addPessoa(scanner);
+                    estoque.fazPagamento(scanner);
                     break;
                 case 8:
-                    if (role.equals("Admin")) {
-                        estoque.listaPessoas();
-                    } else {
-                        System.out.println("Acesso negado: essa função envolve dados pessoais e é restrita ao Admin.");
-                        LogAuditoria.registrar(logado.getUsername(), "ACESSO_NEGADO", "Tentou listar pessoas");
-                    }
+                    estoque.listarTitulosDeDestaque();
                     break;
                 case 9:
-                    if (role.equals("Admin")) {
-                        estoque.cadastrarUsuario(scanner);
-                    } else {
-                        System.out.println("Acesso negado: só Admin pode cadastrar usuários.");
-                        LogAuditoria.registrar(logado.getUsername(), "ACESSO_NEGADO", "Tentou cadastrar usuário");
-                    }
+                    estoque.addPessoa(scanner);
                     break;
                 case 10:
-                    if (role.equals("Admin")) {
-                        estoque.anonimizarPessoa(scanner);
-                    } else {
-                        System.out.println("Acesso negado: só Admin pode anonimizar dados.");
-                        LogAuditoria.registrar(logado.getUsername(), "ACESSO_NEGADO", "Tentou anonimizar pessoa");
-                    }
-                    break;
-                case 11:
-                    System.out.println("Saindo...");
-                    return;
-                case 12:
                     if (role.equals("Admin")) {
                         estoque.preverDemanda(scanner);
                     } else {
@@ -100,6 +81,33 @@ public class Main {
                         LogAuditoria.registrar(logado.getUsername(), "ACESSO_NEGADO", "Tentou acessar previsão de demanda");
                     }
                     break;
+                case 11:
+                    if (role.equals("Admin")) {
+                        estoque.listaPessoas();
+                    } else {
+                        System.out.println("Acesso negado: essa função envolve dados pessoais e é restrita ao Admin.");
+                        LogAuditoria.registrar(logado.getUsername(), "ACESSO_NEGADO", "Tentou listar pessoas");
+                    }
+                    break;
+                case 12:
+                    if (role.equals("Admin")) {
+                        estoque.cadastrarUsuario(scanner);
+                    } else {
+                        System.out.println("Acesso negado: só Admin pode cadastrar usuários.");
+                        LogAuditoria.registrar(logado.getUsername(), "ACESSO_NEGADO", "Tentou cadastrar usuário");
+                    }
+                    break;
+                case 13:
+                    if (role.equals("Admin")) {
+                        estoque.anonimizarPessoa(scanner);
+                    } else {
+                        System.out.println("Acesso negado: só Admin pode anonimizar dados.");
+                        LogAuditoria.registrar(logado.getUsername(), "ACESSO_NEGADO", "Tentou anonimizar pessoa");
+                    }
+                    break;
+                case 14:
+                    System.out.println("Saindo...");
+                    return;
                 default:
                     System.out.println("Opção inválida. Tente novamente.");
             }
