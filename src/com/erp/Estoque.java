@@ -159,10 +159,6 @@ public class Estoque {
 	}
 
 	public void vendaProduto(Scanner scanner) throws IOException {
-		vendaPorPedido(scanner);
-	}
-
-	private void vendaPorPedido(Scanner scanner) throws IOException {
 		Pessoa cliente = buscarPessoaPorTipo(scanner, 1);
 		if (cliente == null) {
 			System.out.println("Cliente não encontrado.");
@@ -174,6 +170,7 @@ public class Estoque {
 
 		System.out.println();
 		System.out.println("Ponto de Venda - " + pedido.getId());
+
 		while (true) {
 			System.out.print("ID do Produto (ou FIM para fechar o pedido): ");
 			String produtoId = scanner.nextLine();
@@ -197,37 +194,40 @@ public class Estoque {
 
 			int jaNoPedido = pedido.quantidadeDoProduto(produtoId);
 			if (qtd + jaNoPedido > produto.getQuantidade()) {
-				System.out.println("Estoque insuficiente. Disponível: " + (produto.getQuantidade() - jaNoPedido));
+				System.out.println("Estoque insuficiente. Disponível: " + (produto.getQuantidade() -
+						jaNoPedido));
 				continue;
 			}
 
+			System.out.println();
+
 			pedido.adicionarItem(new ItemPedido(produtoId, qtd, produto.getPreco()));
-			System.out.println("Item adicionado. Total parcial: R$ " + String.format("%.2f", pedido.getTotal()));}
+			System.out.println("Item adicionado. Total parcial: R$ " + String.format("%.2f", pedido.getTotal()));
+		}
 
 		if (pedido.getItens().isEmpty()) {
 			System.out.println("Pedido cancelado: nenhum produto foi adicionado.");
 			return;
 		}
 
+
 		for (ItemPedido item : pedido.getItens()) {
 			Produto produto = buscarProdutoPorId(item.getProdutoId());
 			produto.removerEstoque(item.getQuantidade());
-			HistoricoVendas.registrarVenda(item.getProdutoId(), item.getQuantidade());
 		}
 
-
-		Titulo titulo = new Titulo(UUID.randomUUID().toString(), pedido.getTotal(), false, cliente.getId(), "a receber");
-
+		Titulo titulo = new Titulo(UUID.randomUUID().toString(), pedido.getTotal(), false, cliente.getId(),
+				"a receber");
 		titulos.add(titulo);
 		pedidos.add(pedido);
 
 		saveProdutos();
 		saveTitulos();
 		savePedidos();
-		LogAuditoria.registrar(usuarioAtual, "VENDA_PEDIDO", "Pedido=" + pedido.getId() + ", Cliente=" + cliente.getId() + ", Itens=" + pedido.getItens().size() + ", Total=" + pedido.getTotal());
-
-		System.out.println(pedido.getId() + " finalizado! Total: R$ " + String.format("%.2f", pedido.getTotal()));
-
+		LogAuditoria.registrar(usuarioAtual, "VENDA_PEDIDO", "Pedido=" + pedido.getId() + ", Cliente="
+				+ cliente.getId() + ", Itens=" + pedido.getItens().size() + ", Total=" + pedido.getTotal());
+		System.out.println(pedido.getId() + " finalizado! Total: R$ " + String.format("%.2f",
+				pedido.getTotal()));
 		System.out.println("Título a receber gerado: " + titulo.getId());
 	}
 
