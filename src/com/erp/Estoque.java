@@ -42,20 +42,52 @@ public class Estoque {
 	public void addPessoa(Scanner scanner) throws IOException {
 		System.out.print("ID da Pessoa: ");
 		String id = scanner.nextLine();
-		System.out.print("Nome da Pessoa: ");
+
+		if (buscarPessoaPorId(id) != null) {
+			System.out.println("Já existe uma pessoa com o ID " + id + ". Cadastro cancelado.");
+			return;
+		}
+
+		System.out.print("Nome da Pessoa (Nome corrido): ");
 		String nome = scanner.nextLine();
-		System.out.print("Tipo de Pessoa (1-Cliente, 2-Fornecedor, 3-Funcionário): ");
-		int tipo = scanner.nextInt();
-		scanner.nextLine();
-		System.out.print("Base Legal (1-Consentimento, 2-Execução de Contrato, 3-Obrigação Legal): ");
-		int opcaoBase = scanner.nextInt();
-		scanner.nextLine();
+
+		int tipo;
+		while (true) {
+			System.out.print("Tipo de Pessoa (1-Cliente, 2-Fornecedor, 3-Funcionário): ");
+			if (scanner.hasNextInt()) {
+				tipo = scanner.nextInt();
+				scanner.nextLine();
+				if (tipo >= 1 && tipo <= 3) {
+					break;
+				}
+			} else {
+				scanner.nextLine();
+			}
+			System.out.println("Opção inválida. Digite 1, 2 ou 3.");
+		}
+
+		int opcaoBase;
+		while (true) {
+			System.out.print("Base Legal (1-Consentimento, 2-Execução de Contrato, 3-Obrigação Legal): ");
+			if (scanner.hasNextInt()) {
+				opcaoBase = scanner.nextInt();
+				scanner.nextLine();
+				if (opcaoBase >= 1 && opcaoBase <= 3) {
+					break;
+				}
+			} else {
+				scanner.nextLine();
+			}
+			System.out.println("Opção inválida. Digite 1, 2 ou 3.");
+		}
+
 		String baseLegal = switch (opcaoBase) {
 			case 1 -> "Consentimento";
 			case 2 -> "Execução de Contrato";
 			case 3 -> "Obrigação Legal";
 			default -> "Não informado";
 		};
+
 		Pessoa pessoa = new Pessoa(id, tipo, nome, baseLegal);
 		pessoas.add(pessoa);
 		savePessoas();
@@ -66,13 +98,22 @@ public class Estoque {
 	public void addProduto(Scanner scanner) throws IOException {
 		System.out.print("ID do Produto: ");
 		String id = scanner.nextLine();
-		System.out.print("Nome do Produto: ");
+		if (buscarProdutoPorId(id) != null) {
+			System.out.println("Já existe um produto com o ID " + id + ". Cadastro cancelado.");
+			return;
+		}
+		System.out.print("Nome do Produto (Nome corrido): ");
 		String nome = scanner.nextLine();
-		System.out.print("Preço do Produto: ");
+		System.out.print("Preço do Produto (Separado por Vírgula): ");
+		int quantidade;
 		double preco = scanner.nextDouble();
+		if (preco <= 0) {
+			System.out.println("O preço deve ser maior que zero. Cadastro cancelado.");
+			return;
+		}
 		scanner.nextLine();
-		System.out.print("Quantidade inicial em estoque: ");
-		int quantidade = scanner.nextInt();
+		System.out.print("Quantidade inicial em estoque (Numeral): ");
+		quantidade = scanner.nextInt();
 		scanner.nextLine();
 
 		Produto produto = new Produto(id, nome, preco, quantidade);
@@ -85,6 +126,12 @@ public class Estoque {
 
 	public void listaProdutos() {
 		System.out.println("Produtos:");
+
+		if (produtos.isEmpty()) {
+			System.out.println("Nenhum produto cadastrado.");
+			return;
+		}
+
 		for (Produto produto : produtos) {
 			System.out.println(produto.getId() + " - " + produto.getNome() + " - R$ " + produto.getPreco()
 					+ " - Estoque: " + produto.getQuantidade());
@@ -93,6 +140,12 @@ public class Estoque {
 
 	public void listaPessoas() {
 		System.out.println("Pessoas:");
+
+		if (pessoas.isEmpty()) {
+			System.out.println("Nenhuma pessoa cadastrada.");
+			return;
+		}
+
 		for (Pessoa pessoa : pessoas) {
 			System.out.println(pessoa.getId() + " - " + pessoa.getNome() + " - Tipo: "
 					+ pessoa.getTipo() + " - Base Legal: " + pessoa.getBaseLegal());
@@ -121,6 +174,10 @@ public class Estoque {
 		}
 	}
 
+	private double arredondar(double valor) {
+		return Math.round(valor * 100) / 100.0;
+	}
+
 	public void compraProduto(Scanner scanner) throws IOException {
 		System.out.print("ID do Produto a comprar: ");
 		String produtoId = scanner.nextLine();
@@ -134,15 +191,24 @@ public class Estoque {
 				return;
 			}
 
-			System.out.print("Quantidade comprada: ");
+			System.out.print("Quantidade comprada (Numeral): ");
 			int qtd = scanner.nextInt();
 			scanner.nextLine();
 			if (qtd <= 0) {
 				System.out.println("Quantidade inválida.");
 				return;
 			}
+
+			System.out.print("Custo unitário pago ao fornecedor: ");
+			double custoUnitario = scanner.nextDouble();
+			scanner.nextLine();
+			if (custoUnitario <= 0) {
+				System.out.println("Custo inválido.");
+				return;
+			}
+
 			produto.adicionarEstoque(qtd);
-			double total = produto.getPreco() * qtd;
+			double total = arredondar(custoUnitario * qtd);
 
 			Titulo titulo = new Titulo(UUID.randomUUID().toString(), total, false, fornecedor.getId(),
 					"a pagar");
@@ -184,7 +250,7 @@ public class Estoque {
 				continue;
 			}
 
-			System.out.print("Quantidade: ");
+			System.out.print("Quantidade (Numeral): ");
 			int qtd = scanner.nextInt();
 			scanner.nextLine();
 			if (qtd <= 0) {
@@ -214,10 +280,10 @@ public class Estoque {
 		for (ItemPedido item : pedido.getItens()) {
 			Produto produto = buscarProdutoPorId(item.getProdutoId());
 			produto.removerEstoque(item.getQuantidade());
+			HistoricoVendas.registrarVenda(item.getProdutoId(), item.getQuantidade());
 		}
 
-		Titulo titulo = new Titulo(UUID.randomUUID().toString(), pedido.getTotal(), false, cliente.getId(),
-				"a receber");
+		Titulo titulo = new Titulo(UUID.randomUUID().toString(), arredondar(pedido.getTotal()), false, cliente.getId(), "a receber");
 		titulos.add(titulo);
 		pedidos.add(pedido);
 
@@ -263,13 +329,16 @@ public class Estoque {
 			return;
 		}
 
+		// um ponto para CADA dia, da primeira venda até a última data relevante; dia sem venda vale 0
 		LocalDate primeiroDia = vendasPorDia.keySet().iterator().next();
+		LocalDate ultimoDiaComVenda = Collections.max(vendasPorDia.keySet());
+		LocalDate hoje = LocalDate.now();
+		LocalDate fimIntervalo = hoje.isAfter(ultimoDiaComVenda) ? hoje : ultimoDiaComVenda;
 		List<Double> xs = new ArrayList<>();
 		List<Double> ys = new ArrayList<>();
-		for (Map.Entry<LocalDate, Integer> entry : vendasPorDia.entrySet()) {
-			long diaIndice = ChronoUnit.DAYS.between(primeiroDia, entry.getKey());
-			xs.add((double) diaIndice);
-			ys.add((double) entry.getValue());
+		for (LocalDate dia = primeiroDia; !dia.isAfter(fimIntervalo); dia = dia.plusDays(1)) {
+			xs.add((double) ChronoUnit.DAYS.between(primeiroDia, dia));
+			ys.add((double) vendasPorDia.getOrDefault(dia, 0));
 		}
 
 		double[] coeficientes = regressaoLinear(xs, ys);
@@ -279,26 +348,43 @@ public class Estoque {
 		long proximoDiaIndice = ChronoUnit.DAYS.between(primeiroDia, LocalDate.now()) + 1;
 		double previsao = Math.max(0, m * proximoDiaIndice + b);
 
-		String tendencia = m >= 0 ? "crescimento" : "queda";
-		System.out.println("Tendência de vendas: " + tendencia + " de aproximadamente "
-				+ String.format("%.2f", Math.abs(m)) + " unidades/dia.");
+		if (Math.abs(m) < 0.01) {
+			System.out.println("Tendência de vendas: estável.");
+		} else {
+			String tendencia = m > 0 ? "crescimento" : "queda";
+			System.out.println("Tendência de vendas: " + tendencia + " de aproximadamente "
+					+ String.format("%.2f", Math.abs(m)) + " unidades/dia.");
+		}
 		System.out.println("Previsão de demanda para amanhã: " + String.format("%.1f", previsao) + " unidades.");
 	}
 
 	private double[] regressaoLinear(List<Double> xs, List<Double> ys) {
 		int n = xs.size();
-		double somaX = 0, somaY = 0, somaXY = 0, somaX2 = 0;
-
-		for (int i = 0; i < n; i++) {
-			somaX += xs.get(i);
-			somaY += ys.get(i);
-			somaXY += xs.get(i) * ys.get(i);
-			somaX2 += xs.get(i) * xs.get(i);
+		if (n < 2) {
+			return new double[]{0.0, 0.0};
 		}
 
-		double m = (n * somaXY - somaX * somaY) / (n * somaX2 - somaX * somaX);
-		double b = (somaY - m * somaX) / n;
+		double somaX = 0.0;
+		double somaY = 0.0;
+		double somaXY = 0.0;
+		double somaX2 = 0.0;
 
+		for (int i = 0; i < n; i++) {
+			double x = xs.get(i);
+			double y = ys.get(i);
+			somaX += x;
+			somaY += y;
+			somaXY += x * y;
+			somaX2 += x * x;
+		}
+
+		double denominador = n * somaX2 - somaX * somaX;
+		if (Math.abs(denominador) < 1e-10) {
+			return new double[]{0.0, somaY / n};
+		}
+
+		double m = (n * somaXY - somaX * somaY) / denominador;
+		double b = (somaY - m * somaX) / n;
 		return new double[]{m, b};
 	}
 
@@ -315,6 +401,10 @@ public class Estoque {
 		}
 
 		if (titulo != null) {
+			if (titulo.isPago()) {
+				System.out.println("Título já está pago. Pagamento repetido não realizado.");
+				return;
+			}
 			titulo.setPaga(true);
 			saveTitulos();
 			LogAuditoria.registrar(usuarioAtual, "PAGAMENTO", "Titulo=" + tituloId);
@@ -353,29 +443,48 @@ public class Estoque {
 
 	public void listarTitulosDeDestaque() {
 		System.out.println("Títulos em Aberto:");
+		boolean encontrouTituloAberto = false;
+
 		for (Titulo title : titulos) {
 			if (!title.isPago()) {
-				System.out.println(title.getId() + " - R$ " + title.getQuantidade() + " - Pessoa: "
-						+ title.getPessoaId() + " - Tipo: " + title.getTipoTitulo());
+				encontrouTituloAberto = true;
+				System.out.println(title.getId()
+						+ " - R$ " + String.format("%.2f", title.getQuantidade())
+						+ " - Pessoa: " + title.getPessoaId()
+						+ " - Tipo: " + title.getTipoTitulo());
 			}
+		}
+
+		if (!encontrouTituloAberto) {
+			System.out.println("Nenhum título em aberto.");
 		}
 	}
 
 	public void listarPedidos() {
 		System.out.println();
 		System.out.println("Pedidos:");
+
 		if (pedidos.isEmpty()) {
 			System.out.println("Nenhum pedido registrado.");
 			return;
 		}
+
 		for (Pedido pedido : pedidos) {
-			System.out.println(pedido.getId() + " - Data: " + pedido.getData() + " - Cliente ID: "
-					+ pedido.getClienteId() + " - Total: R$ " + String.format("%.2f", pedido.getTotal()));
+			System.out.println(pedido.getId()
+					+ " - Data: " + pedido.getData()
+					+ " - Cliente ID: " + pedido.getClienteId()
+					+ " - Total: R$ " + String.format("%.2f", pedido.getTotal()));
+
 			for (ItemPedido item : pedido.getItens()) {
 				Produto produto = buscarProdutoPorId(item.getProdutoId());
-				String nome = (produto != null) ? produto.getNome() : "(produto não encontrado)";
-				System.out.println("    " + item.getQuantidade() + "x " + nome + " - R$ " + item.getPrecoUnitario() + " cada - Subtotal: R$ " + String.format("%.2f", item.getSubtotal()));
+				String nome = (produto != null)
+						? produto.getNome()
+						: "(produto não encontrado)";
+
+				System.out.println("    " + item.getQuantidade() + "x " + nome + " - R$ " + String.format("%.2f",
+						item.getPrecoUnitario()) + " cada - Subtotal: R$ " + String.format("%.2f", item.getSubtotal()));
 			}
+
 			System.out.println();
 		}
 	}
@@ -385,6 +494,15 @@ public class Estoque {
 		String id = scanner.nextLine();
 		for (Pessoa p : pessoas) {
 			if (p.getId().equals(id) && p.getTipo() == tipo) {
+				return p;
+			}
+		}
+		return null;
+	}
+
+	private Pessoa buscarPessoaPorId(String id) {
+		for (Pessoa p : pessoas) {
+			if (p.getId().equals(id)) {
 				return p;
 			}
 		}
@@ -458,12 +576,11 @@ public class Estoque {
 				}
 			}
 		} else {
-			Usuario admin = new Usuario("admin", Usuario.hash("admin123"), "Admin");
-			Usuario operador = new Usuario("operador", Usuario.hash("operador123"), "Operador");
-			usuarios.add(admin);
-			usuarios.add(operador);
+			usuarios.add(new Usuario("admin", Usuario.hash("admin123"), "Admin"));
+			usuarios.add(new Usuario("operador", Usuario.hash("operador123"), "Operador"));
 			saveUsuarios();
-			System.out.println("Usuários criados -> admin/admin123 (Admin) e operador/operador123 (Operador)");
+			System.out.println("Aviso: arquivo de usuários não encontrado. Usuários padrão recriados - avise o administrador.");
+			LogAuditoria.registrar("SISTEMA", "USUARIOS_PADRAO_RECRIADOS", "usuarios.txt não existia na inicialização");
 		}
 	}
 
@@ -478,7 +595,7 @@ public class Estoque {
 	}
 
 	public void cadastrarUsuario(Scanner scanner) throws IOException {
-		System.out.print("Novo login: ");
+		System.out.print("Novo login (Nome corrido): ");
 		String username = scanner.nextLine();
 
 		for (Usuario u : usuarios) {
@@ -488,13 +605,33 @@ public class Estoque {
 			}
 		}
 
-		System.out.print("Senha: ");
-		String senha = scanner.nextLine();
-		System.out.print("Papel (1-Admin, 2-Operador): ");
-		int papel = scanner.nextInt();
-		scanner.nextLine();
-		String role = (papel == 1) ? "Admin" : "Operador";
+		String senha;
 
+		while (true) {
+			System.out.print("Senha (mínimo 6 caracteres): ");
+			senha = scanner.nextLine();
+			if (senha.length() >= 6) {
+				break;
+			}
+			System.out.println("Senha inválida. A senha deve ter pelo menos 6 caracteres.");
+		}
+
+		int papel;
+		while (true) {
+			System.out.print("Papel (1-Admin, 2-Operador): ");
+			if (scanner.hasNextInt()) {
+				papel = scanner.nextInt();
+				scanner.nextLine();
+				if (papel >= 1 && papel <= 2) {
+					break;
+				}
+			} else {
+				scanner.nextLine();
+			}
+			System.out.println("Opção inválida. Digite 1 ou 2.");
+		}
+
+		String role = (papel == 1) ? "Admin" : "Operador";
 		Usuario novo = new Usuario(username, Usuario.hash(senha), role);
 		usuarios.add(novo);
 		saveUsuarios();
