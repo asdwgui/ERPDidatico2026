@@ -40,43 +40,29 @@ public class Estoque {
 	}
 
 	public void addPessoa(Scanner scanner) throws IOException {
-		System.out.print("ID da Pessoa: ");
-		String id = scanner.nextLine();
+		String id = Console.lerTexto(scanner, "ID da Pessoa: ");
 
 		if (buscarPessoaPorId(id) != null) {
 			System.out.println("Já existe uma pessoa com o ID " + id + ". Cadastro cancelado.");
 			return;
 		}
 
-		System.out.print("Nome da Pessoa (Nome corrido): ");
-		String nome = scanner.nextLine();
+		String nome = Console.lerTexto(scanner, "Nome da Pessoa: ");
 
 		int tipo;
 		while (true) {
-			System.out.print("Tipo de Pessoa (1-Cliente, 2-Fornecedor, 3-Funcionário): ");
-			if (scanner.hasNextInt()) {
-				tipo = scanner.nextInt();
-				scanner.nextLine();
-				if (tipo >= 1 && tipo <= 3) {
-					break;
-				}
-			} else {
-				scanner.nextLine();
+			tipo = Console.lerInt(scanner, "Tipo de Pessoa (1-Cliente, 2-Fornecedor, 3-Funcionário): ");
+			if (tipo >= 1 && tipo <= 3) {
+				break;
 			}
 			System.out.println("Opção inválida. Digite 1, 2 ou 3.");
 		}
 
 		int opcaoBase;
 		while (true) {
-			System.out.print("Base Legal (1-Consentimento, 2-Execução de Contrato, 3-Obrigação Legal): ");
-			if (scanner.hasNextInt()) {
-				opcaoBase = scanner.nextInt();
-				scanner.nextLine();
-				if (opcaoBase >= 1 && opcaoBase <= 3) {
-					break;
-				}
-			} else {
-				scanner.nextLine();
+			opcaoBase = Console.lerInt(scanner, "Base Legal (1-Consentimento, 2-Execução de Contrato, 3-Obrigação Legal): ");
+			if (opcaoBase >= 1 && opcaoBase <= 3) {
+				break;
 			}
 			System.out.println("Opção inválida. Digite 1, 2 ou 3.");
 		}
@@ -96,48 +82,64 @@ public class Estoque {
 	}
 
 	public void addProduto(Scanner scanner) throws IOException {
-		System.out.print("ID do Produto: ");
-		String id = scanner.nextLine();
+		Console.titulo("Cadastro de produto");
+		String id = Console.lerTexto(scanner, "ID do Produto: ");
+		if (id.isEmpty()) {
+			Console.aviso("O ID não pode ficar em branco.");
+			return;
+		}
 		if (buscarProdutoPorId(id) != null) {
-			System.out.println("Já existe um produto com o ID " + id + ". Cadastro cancelado.");
+			Console.aviso("Já existe um produto com o ID " + id + ". Use outro ID.");
 			return;
 		}
-		System.out.print("Nome do Produto (Nome corrido): ");
-		String nome = scanner.nextLine();
-		System.out.print("Preço do Produto (Separado por Vírgula): ");
-		int quantidade;
-		double preco = scanner.nextDouble();
+		String nome = Console.lerTexto(scanner, "Nome do Produto: ");
+		if (nome.isEmpty() || nome.contains(",")) {
+			Console.aviso("O nome não pode ficar em branco nem conter vírgula.");
+			return;
+		}
+		double preco = Console.lerDouble(scanner, "Preço do Produto (ex.: 1500,90): ");
 		if (preco <= 0) {
-			System.out.println("O preço deve ser maior que zero. Cadastro cancelado.");
+			Console.aviso("O preço precisa ser maior que zero.");
 			return;
 		}
-		scanner.nextLine();
-		System.out.print("Quantidade inicial em estoque (Numeral): ");
-		quantidade = scanner.nextInt();
-		scanner.nextLine();
+		int quantidade = Console.lerInt(scanner, "Quantidade inicial em estoque: ");
+		if (quantidade < 0) {
+			Console.aviso("A quantidade não pode ser negativa.");
+			return;
+		}
 
 		Produto produto = new Produto(id, nome, preco, quantidade);
-		produtos.add(produto);
+		registrarProduto(produto);
 		saveProdutos();
-		LogAuditoria.registrar(usuarioAtual, "CADASTRO_PRODUTO", "ID=" + id + ", Nome=" + nome + ", Qtd=" +
-				quantidade);
-		System.out.println("Produto adicionado com sucesso.");
+		LogAuditoria.registrar(usuarioAtual, "CADASTRO_PRODUTO", "ID=" + id + ", Nome=" + nome + ", Qtd=" + quantidade);
+		Console.ok("Produto cadastrado: " + nome + " - " + Console.moeda(preco) + " - estoque " + quantidade);
 	}
 
-	public void listaProdutos() {
-		System.out.println("Produtos:");
-
+	public void listaProdutos(Scanner scanner) {
+		String filtro = Console.lerTexto(scanner, "Filtrar por nome (Enter para ver todos): ").toLowerCase();
+		Console.titulo("Produtos");
 		if (produtos.isEmpty()) {
-			System.out.println("Nenhum produto cadastrado.");
+			System.out.println("Nenhum produto cadastrado ainda. Use a opção 1 do menu.");
 			return;
 		}
-
+		System.out.printf("%-6s %-32s %14s %9s%n", "ID", "PRODUTO", "PREÇO", "ESTOQUE");
+		Console.linha();
+		int mostrados = 0;
 		for (Produto produto : produtos) {
-			System.out.println(produto.getId() + " - " + produto.getNome() + " - R$ " + produto.getPreco()
-					+ " - Estoque: " + produto.getQuantidade());
+			if (!filtro.isEmpty() && !produto.getNome().toLowerCase().contains(filtro)) {
+				continue;
+			}
+			System.out.printf("%-6s %-32s %14s %9d%n", produto.getId(), cortar(produto.getNome(), 32),
+					Console.moeda(produto.getPreco()), produto.getQuantidade());
+			mostrados++;
+		}
+		Console.linha();
+		if (mostrados == 0) {
+			System.out.println("Nenhum produto com \"" + filtro + "\" no nome.");
+		} else {
+			System.out.println(mostrados + " produto(s) exibido(s) de " + produtos.size() + " cadastrado(s).");
 		}
 	}
-
 	public void listaPessoas() {
 		System.out.println("Pessoas:");
 
@@ -225,57 +227,68 @@ public class Estoque {
 	}
 
 	public void vendaProduto(Scanner scanner) throws IOException {
+		Console.titulo("Ponto de venda");
 		Pessoa cliente = buscarPessoaPorTipo(scanner, 1);
 		if (cliente == null) {
-			System.out.println("Cliente não encontrado.");
+			Console.aviso("Cliente não encontrado.");
 			return;
 		}
 
 		String data = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
 		Pedido pedido = new Pedido("Pedido " + (pedidos.size() + 1), cliente.getId(), data);
 
-		System.out.println();
-		System.out.println("Ponto de Venda - " + pedido.getId());
-
+		System.out.println(pedido.getId() + " | cliente ID " + cliente.getId() + " | " + data);
+		System.out.println("Digite o ID do produto, R para remover um item ou FIM para fechar o pedido.");
 		while (true) {
-			System.out.print("ID do Produto (ou FIM para fechar o pedido): ");
-			String produtoId = scanner.nextLine();
+			String produtoId = Console.lerTexto(scanner, "> ");
 			if (produtoId.equalsIgnoreCase("FIM")) {
 				break;
+			}
+			if (produtoId.equalsIgnoreCase("R")) {
+				String idRemover = Console.lerTexto(scanner, "ID do produto a remover do pedido: ");
+				if (pedido.removerItem(idRemover)) {
+					Console.ok("Item removido. Total parcial: " + Console.moeda(pedido.getTotal()));
+				} else {
+					Console.aviso("Esse produto não está no pedido.");
+				}
+				continue;
 			}
 
 			Produto produto = buscarProdutoPorId(produtoId);
 			if (produto == null) {
-				System.out.println("Produto não encontrado.");
+				Console.aviso("Produto não encontrado. Confira o ID na opção 2 do menu.");
 				continue;
 			}
 
-			System.out.print("Quantidade (Numeral): ");
-			int qtd = scanner.nextInt();
-			scanner.nextLine();
+			int qtd = Console.lerInt(scanner, "Quantidade de " + produto.getNome() + ": ");
 			if (qtd <= 0) {
-				System.out.println("Quantidade inválida.");
+				Console.aviso("Quantidade inválida.");
 				continue;
 			}
 
 			int jaNoPedido = pedido.quantidadeDoProduto(produtoId);
 			if (qtd + jaNoPedido > produto.getQuantidade()) {
-				System.out.println("Estoque insuficiente. Disponível: " + (produto.getQuantidade() -
-						jaNoPedido));
+				Console.aviso("Estoque insuficiente de " + produto.getNome() + ". Disponível: "
+						+ (produto.getQuantidade() - jaNoPedido));
 				continue;
 			}
 
-			System.out.println();
-
 			pedido.adicionarItem(new ItemPedido(produtoId, qtd, produto.getPreco()));
-			System.out.println("Item adicionado. Total parcial: R$ " + String.format("%.2f", pedido.getTotal()));
+			Console.ok(qtd + "x " + produto.getNome() + " | total parcial: " + Console.moeda(pedido.getTotal()));
 		}
 
 		if (pedido.getItens().isEmpty()) {
-			System.out.println("Pedido cancelado: nenhum produto foi adicionado.");
+			Console.aviso("Pedido cancelado: nenhum produto foi adicionado.");
 			return;
 		}
 
+		mostrarResumoDoPedido(pedido);
+		String confirma = Console.lerTexto(scanner, "Confirmar a venda? (S/N): ");
+		if (!confirma.equalsIgnoreCase("S")) {
+			Console.aviso("Venda cancelada. Nada foi alterado no estoque.");
+			LogAuditoria.registrar(usuarioAtual, "VENDA_CANCELADA", "Pedido=" + pedido.getId());
+			return;
+		}
 
 		for (ItemPedido item : pedido.getItens()) {
 			Produto produto = buscarProdutoPorId(item.getProdutoId());
@@ -283,7 +296,7 @@ public class Estoque {
 			HistoricoVendas.registrarVenda(item.getProdutoId(), item.getQuantidade());
 		}
 
-		Titulo titulo = new Titulo(UUID.randomUUID().toString(), arredondar(pedido.getTotal()), false, cliente.getId(), "a receber");
+		Titulo titulo = new Titulo(UUID.randomUUID().toString(), pedido.getTotal(), false, cliente.getId(), "a receber");
 		titulos.add(titulo);
 		pedidos.add(pedido);
 
@@ -292,10 +305,26 @@ public class Estoque {
 		savePedidos();
 		LogAuditoria.registrar(usuarioAtual, "VENDA_PEDIDO", "Pedido=" + pedido.getId() + ", Cliente="
 				+ cliente.getId() + ", Itens=" + pedido.getItens().size() + ", Total=" + pedido.getTotal());
-		System.out.println(pedido.getId() + " finalizado! Total: R$ " + String.format("%.2f",
-				pedido.getTotal()));
+
+		Console.ok(pedido.getId() + " finalizado! Total: " + Console.moeda(pedido.getTotal()));
 		System.out.println("Título a receber gerado: " + titulo.getId());
 	}
+
+	private void mostrarResumoDoPedido(Pedido pedido) {
+		Console.titulo("Resumo do " + pedido.getId());
+		System.out.printf("%-6s %-32s %5s %13s %13s%n", "ID", "PRODUTO", "QTD", "UNITÁRIO", "SUBTOTAL");
+		Console.linha();
+		for (ItemPedido item : pedido.getItens()) {
+			Produto produto = buscarProdutoPorId(item.getProdutoId());
+			String nome = (produto != null) ? produto.getNome() : "(produto não encontrado)";
+			System.out.printf("%-6s %-32s %5d %13s %13s%n", item.getProdutoId(), cortar(nome, 32),
+					item.getQuantidade(), Console.moeda(item.getPrecoUnitario()), Console.moeda(item.getSubtotal()));
+		}
+		Console.linha();
+		System.out.printf("%-45s %13s %13s%n", "TOTAL DO PEDIDO", "", Console.moeda(pedido.getTotal()));
+	}
+
+
 
 	public void preverDemanda(Scanner scanner) throws IOException {
 		System.out.print("ID do Produto para prever demanda: ");
@@ -415,30 +444,39 @@ public class Estoque {
 	}
 
 	public void relatorioInventario() {
-		System.out.println();
-		System.out.println("RELATÓRIO DE INVENTÁRIO:");
-		double valorTotal = 0;
-		int produtosEmAlerta = 0;
+		Console.titulo("Relatório de inventário");
+		if (produtos.isEmpty()) {
+			System.out.println("Nenhum produto cadastrado ainda.");
+			return;
+		}
+		List<Produto> ordenados = new ArrayList<>(produtos);
+		ordenados.sort((a, b) -> a.getQuantidade() - b.getQuantidade());
 
-		for (Produto p : produtos) {
+		System.out.printf("%-6s %-32s %8s %15s %s%n", "ID", "PRODUTO", "QTD", "VALOR", "SITUAÇÃO");
+		Console.linha();
+		double valorTotal = 0;
+		int emAlerta = 0;
+		int zerados = 0;
+		for (Produto p : ordenados) {
 			double valorEmEstoque = p.getPreco() * p.getQuantidade();
 			valorTotal += valorEmEstoque;
-
-			String alerta = "";
-			if (p.getQuantidade() <= ESTOQUE_MINIMO) {
-				alerta = " (ESTOQUE BAIXO)";
-				produtosEmAlerta++;
+			String situacao = "OK";
+			if (p.getQuantidade() == 0) {
+				situacao = "ZERADO - repor já";
+				zerados++;
+				emAlerta++;
+			} else if (p.getQuantidade() <= ESTOQUE_MINIMO) {
+				situacao = "BAIXO";
+				emAlerta++;
 			}
-			System.out.println(p.getId() + " - " + p.getNome() + " | Qtd: " + p.getQuantidade()
-					+ " | Valor em estoque: R$ " + String.format("%.2f", valorEmEstoque) + alerta);
-
+			System.out.printf("%-6s %-32s %8d %15s %s%n", p.getId(), cortar(p.getNome(), 32),
+					p.getQuantidade(), Console.moeda(valorEmEstoque), situacao);
 		}
-
-		System.out.println("----------------------------------------------------------------------");
-		System.out.println("Produtos cadastrados: " + produtos.size());
-		System.out.println("Produtos com estoque baixo (Menor ou igual a " + ESTOQUE_MINIMO + "): " + produtosEmAlerta);
-		System.out.println("Valor total do inventário: R$ " + String.format("%.2f", valorTotal));
-		LogAuditoria.registrar(usuarioAtual, "RELATORIO_INVENTARIO", "Produtos=" + produtos.size());
+		Console.linha();
+		System.out.println("Produtos cadastrados.......: " + produtos.size());
+		System.out.println("Precisam de reposição......: " + emAlerta + " (sendo " + zerados + " zerado(s))");
+		System.out.println("Valor total do inventário..: " + Console.moeda(valorTotal));
+		LogAuditoria.registrar(usuarioAtual, "RELATORIO_INVENTARIO", "Produtos=" + produtos.size() + ", Alertas=" + emAlerta);
 	}
 
 	public void listarTitulosDeDestaque() {
@@ -460,38 +498,35 @@ public class Estoque {
 		}
 	}
 
-	public void listarPedidos() {
-		System.out.println();
-		System.out.println("Pedidos:");
-
+	public void listarPedidos(Scanner scanner) {
+		Console.titulo("Pedidos");
 		if (pedidos.isEmpty()) {
 			System.out.println("Nenhum pedido registrado.");
 			return;
 		}
-
 		for (Pedido pedido : pedidos) {
-			System.out.println(pedido.getId()
-					+ " - Data: " + pedido.getData()
-					+ " - Cliente ID: " + pedido.getClienteId()
-					+ " - Total: R$ " + String.format("%.2f", pedido.getTotal()));
-
+			System.out.println(pedido.getId() + " | " + pedido.getData() + " | cliente ID "
+					+ pedido.getClienteId() + " | " + pedido.getItens().size() + " item(ns) | "
+					+ Console.moeda(pedido.getTotal()));
 			for (ItemPedido item : pedido.getItens()) {
 				Produto produto = buscarProdutoPorId(item.getProdutoId());
-				String nome = (produto != null)
-						? produto.getNome()
-						: "(produto não encontrado)";
-
-				System.out.println("    " + item.getQuantidade() + "x " + nome + " - R$ " + String.format("%.2f",
-						item.getPrecoUnitario()) + " cada - Subtotal: R$ " + String.format("%.2f", item.getSubtotal()));
+				String nome = (produto != null) ? produto.getNome() : "(produto não encontrado)";
+				System.out.println("    " + item.getQuantidade() + "x " + nome + " - " + Console.moeda(item.getSubtotal()));
 			}
-
-			System.out.println();
 		}
 	}
 
+	public void testeDesempenho() {
+		Console.aviso("Teste de desempenho ainda não implementado.");
+	}
+
 	private Pessoa buscarPessoaPorTipo(Scanner scanner, int tipo) {
-		System.out.print("ID da Pessoa (tipo " + tipo + "): ");
-		String id = scanner.nextLine();
+		String rotulo = switch (tipo) {
+			case 1 -> "cliente";
+			case 2 -> "fornecedor";
+			default -> "funcionário";
+		};
+		String id = Console.lerTexto(scanner, "ID do " + rotulo + ": ");
 		for (Pessoa p : pessoas) {
 			if (p.getId().equals(id) && p.getTipo() == tipo) {
 				return p;
@@ -524,7 +559,7 @@ public class Estoque {
 			try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 				String line;
 				while ((line = reader.readLine()) != null) {
-					if (!line.isBlank()) produtos.add(Produto.fromString(line));
+					if (!line.isBlank()) registrarProduto(Produto.fromString(line));
 				}
 			}
 		}
@@ -636,6 +671,17 @@ public class Estoque {
 		usuarios.add(novo);
 		saveUsuarios();
 		System.out.println("Usuário '" + username + "' cadastrado como " + role + ".");
+	}
+
+	private void registrarProduto(Produto produto) {
+		produtos.add(produto);
+	}
+
+	private String cortar(String texto, int tamanho) {
+		if (texto.length() <= tamanho) {
+			return texto;
+		}
+		return texto.substring(0, tamanho - 3) + "...";
 	}
 
 	private void saveProdutos() throws IOException {

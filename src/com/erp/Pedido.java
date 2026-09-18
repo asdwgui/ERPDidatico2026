@@ -42,6 +42,16 @@ public class Pedido {
         itens.add(novo);
     }
 
+    public boolean removerItem(String produtoId) {
+        for (int i = 0; i < itens.size(); i++) {
+            if (itens.get(i).getProdutoId().equals(produtoId)) {
+                itens.remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public int quantidadeDoProduto(String produtoId) {
         for (ItemPedido item : itens) {
             if (item.getProdutoId().equals(produtoId)) {
