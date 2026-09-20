@@ -71,12 +71,12 @@ public class Pedido {
 
     @Override
     public String toString() {
-        String itensTexto = "";
+        StringBuilder itensTexto = new StringBuilder();
         for (ItemPedido item : itens) {
-            if (!itensTexto.isEmpty()) {
-                itensTexto += ";";
+            if (itensTexto.length() > 0) {
+                itensTexto.append(";");
             }
-            itensTexto += item.toString();
+            itensTexto.append(item.toString());
         }
         return id + "," + clienteId + "," + data + "," + itensTexto;
     }

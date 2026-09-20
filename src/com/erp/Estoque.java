@@ -13,6 +13,7 @@ public class Estoque {
 	private final List<Pessoa> pessoas;
 	private final List<Usuario> usuarios;
 	private final List<Pedido> pedidos;
+	private final Map<String, Produto> indiceProdutos;
 	private String usuarioAtual = "Desconhecido";
 
 	public void setUsuarioAtual(String usuario) {
@@ -25,6 +26,7 @@ public class Estoque {
 	private static final String USUARIOS_ARQUIVO = "usuarios.txt";
 	private static final String PEDIDOS_ARQUIVO = "pedidos.txt";
 	private static final int ESTOQUE_MINIMO = 5;
+	private static final int PEDIDOS_POR_PAGINA = 10;
 
 	public Estoque() throws IOException {
 		produtos = new ArrayList<>();
@@ -32,6 +34,7 @@ public class Estoque {
 		pessoas = new ArrayList<>();
 		usuarios = new ArrayList<>();
 		pedidos = new ArrayList<>();
+		indiceProdutos = new HashMap<>();
 		carregaProduto();
 		carregaTitulos();
 		carregaPessoas();
@@ -504,20 +507,104 @@ public class Estoque {
 			System.out.println("Nenhum pedido registrado.");
 			return;
 		}
-		for (Pedido pedido : pedidos) {
-			System.out.println(pedido.getId() + " | " + pedido.getData() + " | cliente ID "
-					+ pedido.getClienteId() + " | " + pedido.getItens().size() + " item(ns) | "
-					+ Console.moeda(pedido.getTotal()));
-			for (ItemPedido item : pedido.getItens()) {
-				Produto produto = buscarProdutoPorId(item.getProdutoId());
-				String nome = (produto != null) ? produto.getNome() : "(produto não encontrado)";
-				System.out.println("    " + item.getQuantidade() + "x " + nome + " - " + Console.moeda(item.getSubtotal()));
+		int totalPaginas = (pedidos.size() + PEDIDOS_POR_PAGINA - 1) / PEDIDOS_POR_PAGINA;
+		for (int pagina = 0; pagina < totalPaginas; pagina++) {
+			for (int i = 0; i < PEDIDOS_POR_PAGINA; i++) {
+				int posicao = pedidos.size() - 1 - (pagina * PEDIDOS_POR_PAGINA + i);
+				if (posicao < 0) {
+					break;
+				}
+				Pedido pedido = pedidos.get(posicao);
+				System.out.println(pedido.getId() + " | " + pedido.getData() + " | cliente ID "
+						+ pedido.getClienteId() + " | " + pedido.getItens().size() + " item(ns) | "
+						+ Console.moeda(pedido.getTotal()));
+				for (ItemPedido item : pedido.getItens()) {
+					Produto produto = buscarProdutoPorId(item.getProdutoId());
+					String nome = (produto != null) ? produto.getNome() : "(produto não encontrado)";
+					System.out.println("    " + item.getQuantidade() + "x " + nome + " - "
+							+ Console.moeda(item.getSubtotal()));
+				}
+			}
+			Console.linha();
+			System.out.println("Página " + (pagina + 1) + " de " + totalPaginas + " - "
+					+ pedidos.size() + " pedido(s) no total.");
+			if (pagina < totalPaginas - 1) {
+				String opcao = Console.lerTexto(scanner, "Enter para a próxima página ou F para voltar ao menu: ");
+				if (opcao.equalsIgnoreCase("F")) {
+					return;
+				}
 			}
 		}
 	}
 
 	public void testeDesempenho() {
-		Console.aviso("Teste de desempenho ainda não implementado.");
+		int totalProdutos = 50000;
+		int totalBuscas = 5000;
+
+		Console.titulo("Teste de desempenho");
+		System.out.println("Gerando " + totalProdutos + " produtos de teste na memória (seus arquivos não mudam)...");
+
+		List<Produto> lista = new ArrayList<>();
+		Map<String, Produto> indice = new HashMap<>();
+		for (int i = 1; i <= totalProdutos; i++) {
+			Produto p = new Produto("P" + i, "Produto de teste " + i, 10.0, 100);
+			lista.add(p);
+			indice.put(p.getId(), p);
+		}
+
+		Random sorteio = new Random(1);
+		List<String> idsProcurados = new ArrayList<>();
+		for (int i = 0; i < totalBuscas; i++) {
+			idsProcurados.add("P" + (sorteio.nextInt(totalProdutos) + 1));
+		}
+
+		int achadosLista = 0;
+		long inicio = System.nanoTime();
+		for (String id : idsProcurados) {
+			for (Produto p : lista) {
+				if (p.getId().equals(id)) {
+					achadosLista++;
+					break;
+				}
+			}
+		}
+		double msLista = (System.nanoTime() - inicio) / 1_000_000.0;
+
+		int achadosIndice = 0;
+		inicio = System.nanoTime();
+		for (String id : idsProcurados) {
+			if (indice.get(id) != null) {
+				achadosIndice++;
+			}
+		}
+		double msIndice = (System.nanoTime() - inicio) / 1_000_000.0;
+
+		inicio = System.nanoTime();
+		String texto = "";
+		for (int i = 0; i < 20000; i++) {
+			texto += i + ";";
+		}
+		double msConcat = (System.nanoTime() - inicio) / 1_000_000.0;
+
+		inicio = System.nanoTime();
+		StringBuilder construtor = new StringBuilder();
+		for (int i = 0; i < 20000; i++) {
+			construtor.append(i).append(";");
+		}
+		double msBuilder = (System.nanoTime() - inicio) / 1_000_000.0;
+
+		Console.linha();
+		System.out.printf("%-46s %10.1f ms%n", totalBuscas + " buscas percorrendo a lista (antigo):", msLista);
+		System.out.printf("%-46s %10.1f ms%n", totalBuscas + " buscas pelo índice HashMap (novo):", msIndice);
+		System.out.printf("%-46s %10.1f ms%n", "Texto de 20.000 itens com += (antigo):", msConcat);
+		System.out.printf("%-46s %10.1f ms%n", "Texto de 20.000 itens com StringBuilder (novo):", msBuilder);
+		Console.linha();
+		System.out.println("Produtos encontrados nos dois métodos: " + achadosLista + " / " + achadosIndice
+				+ " (os resultados são iguais, só o tempo muda)");
+		System.out.println("Tamanhos conferidos: " + texto.length() + " / " + construtor.length() + " caracteres");
+
+		LogAuditoria.registrar(usuarioAtual, "TESTE_DESEMPENHO", "Lista=" + String.format("%.1f", msLista)
+				+ "ms, Indice=" + String.format("%.1f", msIndice) + "ms");
 	}
 
 	private Pessoa buscarPessoaPorTipo(Scanner scanner, int tipo) {
@@ -545,12 +632,7 @@ public class Estoque {
 	}
 
 	private Produto buscarProdutoPorId(String id) {
-		for (Produto p : produtos) {
-			if (p.getId().equals(id)) {
-				return p;
-			}
-		}
-		return null;
+		return indiceProdutos.get(id);
 	}
 
 	private void carregaProduto() throws IOException {
@@ -675,6 +757,7 @@ public class Estoque {
 
 	private void registrarProduto(Produto produto) {
 		produtos.add(produto);
+		indiceProdutos.put(produto.getId(), produto);
 	}
 
 	private String cortar(String texto, int tamanho) {
