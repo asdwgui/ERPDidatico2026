@@ -2,6 +2,7 @@ package com.erp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.math.BigDecimal;
 
 public class Pedido {
     private String id;
@@ -61,10 +62,10 @@ public class Pedido {
         return 0;
     }
 
-    public double getTotal() {
-        double total = 0;
+    public BigDecimal getTotal() {
+        BigDecimal total = BigDecimal.ZERO;
         for (ItemPedido item : itens) {
-            total += item.getSubtotal();
+            total = total.add(item.getSubtotal());
         }
         return total;
     }
