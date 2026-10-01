@@ -2,6 +2,8 @@ package com.erp;
 
 import java.util.Locale;
 import java.util.Scanner;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class Console {
     public static int lerInt(Scanner scanner, String pergunta) {
@@ -16,12 +18,12 @@ public class Console {
         }
     }
 
-    public static double lerDouble(Scanner scanner, String pergunta) {
+    public static BigDecimal lerDecimal(Scanner scanner, String pergunta) {
         while (true) {
             System.out.print(pergunta);
             String texto = scanner.nextLine().trim().replace(",", ".");
             try {
-                return Double.parseDouble(texto);
+                return new BigDecimal(texto).setScale(2, RoundingMode.HALF_UP);
             } catch (NumberFormatException e) {
                 System.out.println("  [!] Digite um valor como 1500 ou 1500,90.");
             }
@@ -33,7 +35,7 @@ public class Console {
         return scanner.nextLine().trim();
     }
 
-    public static String moeda(double valor) {
+    public static String moeda(BigDecimal valor) {
         return String.format(Locale.forLanguageTag("pt-BR"), "R$ %,.2f", valor);
     }
 
