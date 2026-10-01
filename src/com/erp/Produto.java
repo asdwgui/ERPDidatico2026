@@ -1,12 +1,15 @@
 package com.erp;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class Produto {
     private String id;
     private String nome;
-    private double preco;
+    private BigDecimal preco;
     private int quantidade;
 
-    public Produto(String id, String nome, double preco, int quantidade) {
+    public Produto(String id, String nome, BigDecimal preco, int quantidade) {
         this.id = id;
         this.nome = nome;
         this.preco = preco;
@@ -21,7 +24,7 @@ public class Produto {
         return nome;
     }
 
-    public double getPreco() {
+    public BigDecimal getPreco() {
         return preco;
     }
 
@@ -43,12 +46,13 @@ public class Produto {
 
     @Override
     public String toString() {
-        return id + "," + nome + "," + preco + "," + quantidade;
+        return id + "," + nome + "," + preco.toPlainString() + "," + quantidade;
     }
 
     public static Produto fromString(String str) {
         String[] parts = str.split(",");
         int quantidade = parts.length >= 4 ? Integer.parseInt(parts[3]) : 0;
-        return new Produto(parts[0], parts[1], Double.parseDouble(parts[2]), quantidade);
+        return new Produto(parts[0], parts[1],
+                new BigDecimal(parts[2].trim()).setScale(2, RoundingMode.HALF_UP), quantidade);
     }
 }
