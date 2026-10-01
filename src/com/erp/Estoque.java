@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.math.BigDecimal;
 
 public class Estoque {
 	private final List<Produto> produtos;
@@ -100,8 +101,8 @@ public class Estoque {
 			Console.aviso("O nome não pode ficar em branco nem conter vírgula.");
 			return;
 		}
-		double preco = Console.lerDouble(scanner, "Preço do Produto (ex.: 1500,90): ");
-		if (preco <= 0) {
+		BigDecimal preco = Console.lerDecimal(scanner, "Preço do Produto (ex.: 1500,90): ");
+		if (preco.signum() <= 0) {
 			Console.aviso("O preço precisa ser maior que zero.");
 			return;
 		}
@@ -179,10 +180,6 @@ public class Estoque {
 		}
 	}
 
-	private double arredondar(double valor) {
-		return Math.round(valor * 100) / 100.0;
-	}
-
 	public void compraProduto(Scanner scanner) throws IOException {
 		System.out.print("ID do Produto a comprar: ");
 		String produtoId = scanner.nextLine();
@@ -204,16 +201,14 @@ public class Estoque {
 				return;
 			}
 
-			System.out.print("Custo unitário pago ao fornecedor: ");
-			double custoUnitario = scanner.nextDouble();
-			scanner.nextLine();
-			if (custoUnitario <= 0) {
+			BigDecimal custoUnitario = Console.lerDecimal(scanner, "Custo unitário pago ao fornecedor: ");
+			if (custoUnitario.signum() <= 0) {
 				System.out.println("Custo inválido.");
 				return;
 			}
 
 			produto.adicionarEstoque(qtd);
-			double total = arredondar(custoUnitario * qtd);
+			BigDecimal total = custoUnitario.multiply(BigDecimal.valueOf(qtd));
 
 			Titulo titulo = new Titulo(UUID.randomUUID().toString(), total, false, fornecedor.getId(),
 					"a pagar");
@@ -457,12 +452,12 @@ public class Estoque {
 
 		System.out.printf("%-6s %-32s %8s %15s %s%n", "ID", "PRODUTO", "QTD", "VALOR", "SITUAÇÃO");
 		Console.linha();
-		double valorTotal = 0;
+		BigDecimal valorTotal = BigDecimal.ZERO;
 		int emAlerta = 0;
 		int zerados = 0;
 		for (Produto p : ordenados) {
-			double valorEmEstoque = p.getPreco() * p.getQuantidade();
-			valorTotal += valorEmEstoque;
+			BigDecimal valorEmEstoque = p.getPreco().multiply(BigDecimal.valueOf(p.getQuantidade()));
+			valorTotal = valorTotal.add(valorEmEstoque);
 			String situacao = "OK";
 			if (p.getQuantidade() == 0) {
 				situacao = "ZERADO - repor já";
@@ -490,7 +485,7 @@ public class Estoque {
 			if (!title.isPago()) {
 				encontrouTituloAberto = true;
 				System.out.println(title.getId()
-						+ " - R$ " + String.format("%.2f", title.getQuantidade())
+						+ " - " + Console.moeda(title.getQuantidade())
 						+ " - Pessoa: " + title.getPessoaId()
 						+ " - Tipo: " + title.getTipoTitulo());
 			}
@@ -547,7 +542,7 @@ public class Estoque {
 		List<Produto> lista = new ArrayList<>();
 		Map<String, Produto> indice = new HashMap<>();
 		for (int i = 1; i <= totalProdutos; i++) {
-			Produto p = new Produto("P" + i, "Produto de teste " + i, 10.0, 100);
+			Produto p = new Produto("P" + i, "Produto de teste " + i, new BigDecimal("10.00"), 100);
 			lista.add(p);
 			indice.put(p.getId(), p);
 		}
