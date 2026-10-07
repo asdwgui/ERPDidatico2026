@@ -1,12 +1,18 @@
 package com.erp;
 
+import javax.swing.SwingUtilities;
 import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
+
+        // DESAFIO 6: medimos a abertura do sistema para comparar antes e depois
+        Medicao abertura = Medicao.iniciar("abrir o ERP (carregar os arquivos)");
+
         Estoque estoque = new Estoque();
+        abertura.encerrar();
 
         String usuarioLogin = Console.lerTexto(scanner, "Usuário: ");
         String senha = Console.lerTexto(scanner, "Senha: ");
@@ -76,6 +82,10 @@ public class Main {
                         LogAuditoria.registrar(logado.getUsername(), "ACESSO_NEGADO", "Tentou acessar previsão de demanda");
                     }
                     break;
+                case 15: // DESAFIO 6: protótipo da nova interface
+                    abrirTelaConsulta(estoque);
+                    break;
+
                 case 0:
                     System.out.println("Saindo...");
                     return;
@@ -83,6 +93,15 @@ public class Main {
                     Console.aviso("Opção inválida. Escolha um número do menu.");
             }
         }
+    }
+
+    // DESAFIO 6: abre a janela do protótipo sem travar o menu do console.
+// As duas interfaces convivem: é a "transição gradual" prometida ao cliente.
+    private static void abrirTelaConsulta(Estoque estoque) {
+        Medicao medicao = Medicao.iniciar("montar a tela de consulta");
+        SwingUtilities.invokeLater(() -> new TelaConsultaProdutos(estoque.getProdutos()).setVisible(true));
+        medicao.encerrar();
+        System.out.println("Janela aberta. O menu do console continua funcionando aqui.");
     }
 
     private static void mostrarMenu(String usuario, String role) {
@@ -101,6 +120,7 @@ public class Main {
         System.out.println(" 10. Listar pessoas [Admin]     SISTEMA");
         System.out.println(" 11. Cadastrar usuário [Admin]  13. Teste de desempenho [Admin]");
         System.out.println(" 12. Anonimizar pessoa [Admin]  14. Prever demanda [Admin]");
+        System.out.println("                                15. Nova interface (protótipo)");
         System.out.println("                                 0. Sair");
         System.out.println("============================================================");
     }

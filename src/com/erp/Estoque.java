@@ -7,8 +7,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Estoque {
+public class  Estoque {
 	private final List<Produto> produtos;
 	private final List<Titulo> titulos;
 	private final List<Pessoa> pessoas;
@@ -629,6 +631,13 @@ public class Estoque {
 	private Produto buscarProdutoPorId(String id) {
 		return indiceProdutos.get(id);
 	}
+
+	// DESAFIO 6: a tela de consulta precisa da lista de produtos que já está na memória.
+// Devolve uma cópia: a tela mostra, mas não altera o estoque do sistema.
+	public List<Produto> getProdutos() {
+		return new ArrayList<>(produtos);
+	}
+
 
 	private void carregaProduto() throws IOException {
 		File file = new File(PRODUTOS_ARQUIVO);
