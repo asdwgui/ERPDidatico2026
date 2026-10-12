@@ -1,0 +1,50 @@
+1,Celular Samsung Galaxy A57 5G,1709.10,0
+2,Notebook Dell Dc15,4500.50,53
+3,iPhone 16 128GB,3899.00,0
+4,Samsung Galaxy S25 256GB,4299.90,0
+5,Motorola Edge 50 Neo 256GB,2199.00,0
+6,Xiaomi Redmi Note 14 Pro 5G,1899.90,0
+7,Apple iPhone 15 128GB,3499.00,0
+8,Samsung Galaxy A36 5G 256GB,1899.00,0
+9,Motorola Moto G85 5G 256GB,1699.90,0
+10,Xiaomi Poco X7 Pro 256GB,2399.00,0
+11,Apple iPad 11ª Geração 128GB,2899.00,0
+12,Samsung Galaxy Tab S10 FE 128GB,2799.90,0
+13,Notebook Lenovo IdeaPad Slim 3 i5,3299.00,0
+14,Notebook Acer Aspire 5 Ryzen 7,3799.90,0
+15,Notebook ASUS Vivobook 15 i5,3599.00,0
+16,Notebook Lenovo LOQ Gaming RTX 3050,5299.00,0
+17,Notebook Acer Nitro V15 RTX 4050,6199.90,0
+18,Notebook HP 256 G10 Core i5,3199.00,0
+19,Monitor LG UltraGear 24GS60F 24,899.90,0
+20,Monitor Samsung T350 24 Full HD,649.00,0
+21,Monitor Dell P2425H 24 IPS,1199.00,0
+22,Monitor AOC Hero 27G2S 27,1099.90,0
+23,Teclado Logitech K120 USB,89.90,0
+24,Teclado Mecânico Redragon Kumara K552,219.00,0
+25,Mouse Logitech G502 Hero,299.90,0
+26,Mouse Logitech M170 Wireless,79.90,0
+27,Headset HyperX Cloud Stinger 2,249.00,0
+28,Headset Logitech G435 Wireless,399.90,0
+29,Webcam Logitech C920s Full HD,349.00,0
+30,Impressora Epson EcoTank L3250,1099.00,0
+31,Impressora HP Smart Tank 581,899.90,0
+32,SSD Kingston NV2 1TB NVMe,449.00,0
+33,SSD Samsung 990 EVO Plus 1TB,699.90,0
+34,HD Externo Seagate Expansion 2TB,499.00,0
+35,Memória RAM Kingston Fury Beast 16GB DDR4,269.90,0
+36,Memória RAM Kingston Fury Beast 32GB DDR5,599.00,0
+37,Placa de Vídeo NVIDIA RTX 4060 8GB,2199.00,0
+38,Placa de Vídeo Radeon RX 7600 8GB,1999.90,0
+39,Processador AMD Ryzen 5 5600,699.00,0
+40,Processador Intel Core i5-14400F,1199.90,0
+41,Placa-Mãe ASUS Prime B550M-A,699.00,0
+42,Placa-Mãe MSI PRO B760M-P DDR4,749.90,0
+43,Console Sony PlayStation 5 Slim Digital,3299.00,0
+44,Console Microsoft Xbox Series S 512GB,2399.90,0
+45,Controle Sony DualSense PS5 Branco,399.00,0
+46,Controle Xbox Wireless Carbon Black,429.90,0
+47,Smart TV Samsung Crystal UHD 50 4K,2199.00,0
+48,Smart TV LG UHD AI 55 4K,2699.90,0
+49,Impressora Multifuncional Brother DCP-L2540DW,1899.00,0
+50,Roteador TP-Link Archer AX23 Wi-Fi 6,399.90,0
