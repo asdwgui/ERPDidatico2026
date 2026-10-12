@@ -1,0 +1,2 @@
+1,Celular Samsung Galaxy A57 5G,1709.10,10
+2,Notebook Dell Dc15,4500.50,100
