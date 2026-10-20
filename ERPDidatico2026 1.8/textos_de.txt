@@ -1,0 +1,287 @@
+# ERP Didatico 2026 - textos da interface em Alemao (de)
+# Formato: chave=texto. Linhas vazias e linhas com # sao ignoradas.
+# O %s e o %d sao buracos que o programa preenche na hora.
+
+
+# ---- Troca de idioma
+idioma.nome=Deutsch (Deutschland)
+
+# ---- Configuracao regional
+formato.locale=de-DE
+formato.data=dd.MM.yyyy HH:mm
+formato.moeda.codigo=EUR
+formato.moeda.taxa=0.16
+
+# ---- Login
+login.usuario=Benutzer:
+login.senha=Passwort:
+login.invalido=Ungültige Anmeldung
+login.bemvindo=Willkommen, %s (%s)
+
+# ---- Menu principal
+menu.sistema=ERP DIDÁTICO 2026
+menu.grupo.estoque=BESTAND
+menu.grupo.vendas=VERKAUF
+menu.grupo.financeiro=FINANZEN
+menu.grupo.cadastros=STAMMDATEN
+menu.grupo.sistema=SYSTEM
+menu.grupo.ia=KÜNSTLICHE INTELLIGENZ
+menu.1=Produkt anlegen
+menu.2=Produkte abfragen
+menu.3=Beim Lieferanten einkaufen
+menu.4=Bestandsbericht
+menu.5=Kasse (neuer Auftrag)
+menu.6=Aufträge auflisten
+menu.7=Zahlung ausführen
+menu.8=Offene Posten
+menu.9=Person anlegen
+menu.10=Personen auflisten [Admin]
+menu.11=Benutzer anlegen [Admin]
+menu.12=Person anonymisieren [Admin]
+menu.13=Leistungstest [Admin]
+menu.14=Bedarf prognostizieren [Admin]
+menu.15=Sprache wechseln
+menu.16=Intelligente Erfassung (KI)
+menu.17=KI-Bericht [Admin]
+menu.0=Beenden
+menu.escolha=Bitte Option wählen:
+menu.invalida=Ungültige Option. Bitte eine Nummer aus dem Menü wählen.
+menu.saindo=Wird beendet...
+menu.abertura=ERP öffnen (Dateien laden)
+
+# ---- Troca de idioma
+idioma.titulo=Sprache
+idioma.atual=Aktuelle Sprache: %s
+idioma.disponiveis=Verfügbar: pt (Portugiesisch), de (Deutsch)
+idioma.escolha=Sprachcode (Enter zum Beibehalten):
+idioma.alterado=Sprache geändert zu %s.
+idioma.salvo=Einstellung für Benutzer %s gespeichert.
+
+# ---- Controle de acesso
+acesso.pessoas=Zugriff verweigert: Diese Funktion betrifft personenbezogene Daten und ist dem Admin vorbehalten.
+acesso.usuarios=Zugriff verweigert: Nur der Admin darf Benutzer anlegen.
+acesso.anonimizar=Zugriff verweigert: Nur der Admin darf Daten anonymisieren.
+acesso.desempenho=Zugriff verweigert: Der Leistungstest ist dem Admin vorbehalten.
+acesso.previsao=Zugriff verweigert: Nur der Admin darf die Prognose ausführen.
+acesso.ia=Zugriff verweigert: Der KI-Bericht ist dem Admin vorbehalten.
+
+# ---- Cabecalhos de tabela
+col.id=ID
+col.produto=PRODUKT
+col.preco=PREIS
+col.estoque=BESTAND
+col.qtd=MENGE
+col.unitario=EINZELPREIS
+col.subtotal=ZWISCHENSUMME
+col.valor=WERT
+col.situacao=STATUS
+
+# ---- Cadastro de produto
+produto.cadastro.titulo=Produkt anlegen
+produto.id=Produkt-ID:
+produto.id.vazio=Die ID darf nicht leer sein.
+produto.id.duplicado=Es gibt bereits ein Produkt mit der ID %s. Bitte eine andere ID verwenden.
+produto.nome=Produktname:
+produto.nome.invalido=Der Name darf nicht leer sein und kein Komma enthalten.
+produto.preco=Produktpreis (z. B. 1500,90):
+produto.preco.invalido=Der Preis muss größer als null sein.
+produto.quantidade=Anfangsbestand:
+produto.quantidade.invalida=Die Menge darf nicht negativ sein.
+produto.cadastrado=Produkt angelegt: %s - %s - Bestand %d
+produto.nao.encontrado=Produkt nicht gefunden.
+
+# ---- Lista de produtos
+produtos.filtro=Nach Namen filtern (Enter für alle):
+produtos.titulo=Produkte
+produtos.vazio=Noch keine Produkte erfasst. Bitte Menüpunkt 1 verwenden.
+produtos.nenhum.filtro=Kein Produkt mit "%s" im Namen.
+produtos.exibidos=%d von %d erfassten Produkten angezeigt.
+
+# ---- Pessoas
+pessoa.id=Personen-ID:
+pessoa.id.duplicado=Es gibt bereits eine Person mit der ID %s. Anlage abgebrochen.
+pessoa.nome=Name der Person:
+pessoa.tipo=Personentyp (1-Kunde, 2-Lieferant, 3-Mitarbeiter):
+pessoa.opcao.invalida=Ungültige Option. Bitte 1, 2 oder 3 eingeben.
+pessoa.baselegal=Rechtsgrundlage (1-Einwilligung, 2-Vertragserfüllung, 3-Rechtliche Verpflichtung):
+pessoa.baselegal.1=Einwilligung
+pessoa.baselegal.2=Vertragserfüllung
+pessoa.baselegal.3=Rechtliche Verpflichtung
+pessoa.baselegal.0=Nicht angegeben
+pessoa.cadastrada=Person erfolgreich angelegt.
+pessoa.nao.encontrada=Person nicht gefunden.
+pessoa.anonimizar.id=ID der zu anonymisierenden Person:
+pessoa.anonimizada=Daten der Person wurden anonymisiert.
+pessoas.titulo=Personen
+pessoas.vazio=Keine Person erfasst.
+pessoa.linha=%s - %s - Typ: %s - Rechtsgrundlage: %s
+pessoa.tipo.1=Kunde
+pessoa.tipo.2=Lieferant
+pessoa.tipo.3=Mitarbeiter
+pessoa.pedir.1=Kunden-ID:
+pessoa.pedir.2=Lieferanten-ID:
+pessoa.pedir.3=Mitarbeiter-ID:
+
+# ---- Compra do fornecedor
+compra.produto.id=ID des einzukaufenden Produkts:
+compra.fornecedor.nao.encontrado=Lieferant nicht gefunden.
+compra.quantidade=Eingekaufte Menge:
+compra.quantidade.invalida=Ungültige Menge.
+compra.custo=Einkaufspreis pro Einheit:
+compra.custo.invalido=Ungültiger Preis.
+compra.registrada=Einkauf erfasst. Aktueller Bestand: %d
+compra.titulo.gerado=Verbindlichkeit erzeugt: %s
+
+# ---- Ponto de venda
+venda.titulo=Kasse
+venda.cliente.nao.encontrado=Kunde nicht gefunden.
+venda.cabecalho=%s | Kunden-ID %s | %s
+venda.instrucao=Produkt-ID eingeben, L zum Entfernen einer Position oder ENDE zum Abschließen.
+venda.letra.fim=ENDE
+venda.letra.remover=L
+venda.prompt=>
+venda.remover.id=ID des zu entfernenden Produkts:
+venda.item.removido=Position entfernt. Zwischensumme: %s
+venda.item.inexistente=Dieses Produkt ist nicht im Auftrag.
+venda.produto.nao.encontrado=Produkt nicht gefunden. Bitte die ID in Menüpunkt 2 prüfen.
+venda.quantidade=Menge von %s:
+venda.quantidade.invalida=Ungültige Menge.
+venda.estoque.insuficiente=Nicht genügend Bestand von %s. Verfügbar: %d
+venda.item.adicionado=%dx %s | Zwischensumme: %s
+venda.sem.itens=Auftrag abgebrochen: Kein Produkt hinzugefügt.
+venda.confirmar=Verkauf bestätigen? (J/N):
+venda.letra.sim=J
+venda.cancelada=Verkauf abgebrochen. Der Bestand wurde nicht verändert.
+venda.finalizada=%s abgeschlossen! Gesamt: %s
+venda.titulo.gerado=Forderung erzeugt: %s
+
+# ---- Pedido
+pedido.resumo.titulo=Zusammenfassung %s
+pedido.total=AUFTRAGSSUMME
+pedido.produto.sumiu=(Produkt nicht gefunden)
+
+# ---- Lista de pedidos
+pedidos.titulo=Aufträge
+pedidos.vazio=Kein Auftrag erfasst.
+pedidos.linha=%s | %s | Kunden-ID %s | %d Position(en) | %s
+pedidos.item=%dx %s - %s
+pedidos.pagina=Seite %d von %d - %d Auftrag/Aufträge insgesamt.
+pedidos.proxima=Enter für die nächste Seite oder Z zurück zum Menü:
+pedidos.letra.fim=Z
+
+# ---- Relatorio de inventario
+relatorio.titulo=Bestandsbericht
+relatorio.vazio=Noch keine Produkte erfasst.
+relatorio.situacao.ok=OK
+relatorio.situacao.zerado=LEER - sofort nachbestellen
+relatorio.situacao.baixo=NIEDRIG
+relatorio.criticos=Es werden die %d kritischsten von %d Produkten angezeigt.
+relatorio.cadastrados=Erfasste Produkte
+relatorio.reposicao=Nachbestellung nötig
+relatorio.reposicao.valor=%d (davon %d leer)
+relatorio.valor.total=Gesamtwert des Bestands
+
+# ---- Titulos
+titulos.titulo=Offene Posten
+titulos.linha=%s - %s - Person: %s - Typ: %s
+titulos.vazio=Keine offenen Posten.
+titulo.tipo.receber=Forderung
+titulo.tipo.pagar=Verbindlichkeit
+
+# ---- Pagamento
+pagamento.id=ID des zu zahlenden Postens:
+pagamento.ja.pago=Posten ist bereits bezahlt. Doppelte Zahlung nicht ausgeführt.
+pagamento.ok=Posten erfolgreich bezahlt.
+pagamento.nao.encontrado=Posten nicht gefunden.
+
+# ---- Previsao de demanda
+previsao.id=Produkt-ID für die Bedarfsprognose:
+previsao.linha.invalida=Hinweis: Historienzeile wegen ungültigem Format übersprungen.
+previsao.sem.historico=Noch nicht genug Historie für eine Prognose dieses Produkts (Verkäufe an mindestens 2 verschiedenen Tagen nötig).
+previsao.estavel=Verkaufstrend: stabil.
+previsao.tendencia=Verkaufstrend: %s von etwa %s Einheiten pro Tag.
+previsao.crescimento=Wachstum
+previsao.queda=Rückgang
+previsao.amanha=Bedarfsprognose für morgen: %s Einheiten.
+
+# ---- Usuarios
+usuario.novo.login=Neuer Benutzername:
+usuario.duplicado=Dieser Benutzername existiert bereits.
+usuario.senha=Passwort (mindestens 6 Zeichen):
+usuario.senha.curta=Ungültiges Passwort. Es muss mindestens 6 Zeichen haben.
+usuario.papel=Rolle (1-Admin, 2-Bediener):
+usuario.papel.invalido=Ungültige Option. Bitte 1 oder 2 eingeben.
+usuario.cadastrado=Benutzer '%s' als %s angelegt.
+usuarios.recriados=Hinweis: Benutzerdatei nicht gefunden. Standardbenutzer wurden neu angelegt - bitte den Administrator informieren.
+
+# ---- Teste de desempenho
+desempenho.titulo=Leistungstest
+desempenho.gerando=%d Testprodukte werden im Speicher erzeugt (Ihre Dateien bleiben unverändert)...
+desempenho.lista=%d Suchen durch die Liste (alt):
+desempenho.indice=%d Suchen über den HashMap-Index (neu):
+desempenho.concat=Text mit 20.000 Einträgen per += (alt):
+desempenho.builder=Text mit 20.000 Einträgen per StringBuilder (neu):
+desempenho.conferencia=In beiden Verfahren gefundene Produkte: %d / %d (die Ergebnisse sind gleich, nur die Zeit ändert sich)
+desempenho.tamanhos=Geprüfte Längen: %d / %d Zeichen
+
+# ---- Tela grafica (Swing)
+tela.titulo=ERP Didático 2026 - Produktabfrage
+tela.buscar=Nach Name oder ID suchen:
+tela.filtrar=Filtern
+tela.rodape=%d von %d Produkten | Suche und Tabellenaufbau: %s ms
+tela.col.id=ID
+tela.col.produto=Produkt
+tela.col.preco=Preis
+tela.col.estoque=Bestand
+tela.aberta=Fenster geöffnet. Das Konsolenmenü funktioniert hier weiter.
+tela.montar=Abfragefenster aufbauen
+
+# ---- Avisos do sistema
+console.int.invalido=Bitte eine ganze Zahl eingeben (z. B. 10).
+console.decimal.invalido=Bitte einen Wert wie 1500 oder 1500,90 eingeben.
+# ---- Kuenstliche Intelligenz (Desafio 8)
+ia.categoria.gravada=Kategorie gespeichert: %s
+ia.sugestao=KI-Vorschlag: %s (%s%% Sicherheit, %d ms)
+ia.indisponivel=Automatische Klassifizierung nicht verfügbar (%s). Bitte manuell eingeben.
+ia.confirmar=Kategorie (Enter übernimmt den Vorschlag):
+ia.erro.modelo=Modell nicht trainiert
+ia.erro.amostra=Trainingsdaten nicht gefunden (ExportadorAmostra ausführen)
+ia.erro.servidor=keine Antwort vom Klassifizierungsserver
+ia.erro.interrompida=Aufruf unterbrochen
+ia.erro.limite=Zeitlimit von %d ms überschritten
+ia.metrica.gravar=Die Klassifizierungsmetrik konnte nicht gespeichert werden.
+ia.metrica.ler=Die Datei %s konnte nicht gelesen werden.
+ia.tela.titulo=ERP Didático 2026 - Intelligente Erfassung
+ia.tela.aba.produto=Produkt
+ia.tela.aba.cliente=Kunde
+ia.categoria=Kategorie:
+ia.segmento=Segment:
+ia.cliente.pedidos=Anzahl Aufträge:
+ia.cliente.valor=Gesamteinkaufswert:
+ia.botao.sugerir=KI-Vorschlag
+ia.botao.salvar=Speichern
+ia.botao.historico=Verlauf laden
+ia.falta.dados=Bitte alle Felder korrekt ausfüllen.
+ia.salvo.produto=Produkt '%s' in Kategorie gespeichert: %s
+ia.salvo.cliente=Kunde '%s' im Segment gespeichert: %s
+ia.historico.carregado=Verlauf geladen: %d Aufträge, Gesamtwert %s
+ia.cliente.sem.historico=Kunde ohne Aufträge: Der Vorschlag ist nur die häufigste Vermutung.
+
+ia.relatorio.titulo=Bericht der intelligenten Klassifizierung
+ia.relatorio.vazio=Noch keine Klassifizierungen erfasst.
+ia.relatorio.chamadas=Aufrufe des Dienstes
+ia.relatorio.aceitas=Akzeptierte Vorschläge
+ia.relatorio.corrigidas=Korrigierte Vorschläge
+ia.relatorio.falhas=Ausfälle des Dienstes
+ia.relatorio.disponibilidade=Verfügbarkeit des Dienstes
+ia.relatorio.aceitacao=Akzeptanzquote
+ia.relatorio.conf.aceitas=Ø Sicherheit (akzeptiert)
+ia.relatorio.conf.corrigidas=Ø Sicherheit (korrigiert)
+ia.relatorio.col.sugestao=Vorschlag
+ia.relatorio.col.aceitas=Akzeptiert
+ia.relatorio.col.corrigidas=Korrigiert
+ia.relatorio.col.taxa=Quote
+ia.relatorio.poucos=Zu wenige Klassifizierungen für eine Aussage (Minimum: %d).
+ia.relatorio.retreinar=Akzeptanzquote unter %s%%. Das Modell sollte neu trainiert werden.
+ia.relatorio.saudavel=Akzeptanzquote über %s%%. Modell in gutem Zustand.
+vendas.historico.erro=Fehler beim Speichern des Verkaufsverlaufs: %s
