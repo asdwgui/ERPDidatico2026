@@ -1,0 +1,387 @@
+# ERP Didatico 2026 - textos da interface em PORTUGUES (pt-BR)
+# Formato: chave=texto. Linhas vazias e linhas com # sao ignoradas.
+# O %s e o %d sao buracos que o programa preenche na hora.
+
+# ---- Troca de idioma
+idioma.nome=Português (Brasil)
+
+# ---- Configuracao regional
+formato.locale=pt-BR
+formato.data=dd/MM/yyyy HH:mm
+formato.moeda.codigo=BRL
+formato.moeda.taxa=1.00
+
+# ---- Login
+login.usuario=Usuário / Benutzer:
+login.senha=Senha / Passwort:
+login.invalido=Login inválido
+login.bemvindo=Bem-vindo, %s (%s)
+
+# ---- Menu principal
+menu.sistema=ERP DIDÁTICO 2026
+menu.grupo.estoque=ESTOQUE
+menu.grupo.vendas=VENDAS
+menu.grupo.financeiro=FINANCEIRO
+menu.grupo.cadastros=CADASTROS
+menu.grupo.sistema=SISTEMA
+menu.grupo.ia=INTELIGÊNCIA ARTIFICIAL
+menu.1=Cadastrar produto
+menu.2=Consultar produtos
+menu.3=Comprar do fornecedor
+menu.4=Relatório de inventário
+menu.5=Ponto de venda (novo pedido)
+menu.6=Listar pedidos
+menu.7=Efetuar pagamento
+menu.8=Títulos em aberto
+menu.9=Cadastrar pessoa
+menu.10=Listar pessoas [Admin]
+menu.11=Cadastrar usuário [Admin]
+menu.12=Anonimizar pessoa [Admin]
+menu.13=Teste de desempenho [Admin]
+menu.14=Prever demanda [Admin]
+menu.15=Trocar idioma
+menu.16=Cadastro inteligente (IA)
+menu.17=Relatório da IA [Admin]
+menu.0=Sair
+menu.escolha=Escolha uma opção:
+menu.invalida=Opção inválida. Escolha um número do menu.
+menu.saindo=Saindo...
+menu.abertura=abrir o ERP / ERP öffnen
+
+# ---- Troca de idioma
+idioma.titulo=Idioma
+idioma.atual=Idioma atual: %s
+idioma.disponiveis=Disponíveis: pt (português), de (alemão)
+idioma.escolha=Código do idioma (Enter para manter):
+idioma.alterado=Idioma alterado para %s.
+idioma.salvo=Preferência gravada para o usuário %s.
+
+# ---- Controle de acesso
+acesso.pessoas=Acesso negado: essa função envolve dados pessoais e é restrita ao Admin.
+acesso.usuarios=Acesso negado: só Admin pode cadastrar usuários.
+acesso.anonimizar=Acesso negado: só Admin pode anonimizar dados.
+acesso.desempenho=Acesso negado: o teste de desempenho é restrito ao Admin.
+acesso.previsao=Acesso negado: só Admin pode fazer a análise preditiva.
+acesso.ia=Acesso negado: o relatório da IA é restrito ao Admin.
+
+# ---- Cabecalhos de tabela
+col.id=ID
+col.produto=PRODUTO
+col.preco=PREÇO
+col.estoque=ESTOQUE
+col.qtd=QTD
+col.unitario=UNITÁRIO
+col.subtotal=SUBTOTAL
+col.valor=VALOR
+col.situacao=SITUAÇÃO
+
+# ---- Cadastro de produto
+produto.cadastro.titulo=Cadastro de produto
+produto.id=ID do Produto:
+produto.id.vazio=O ID não pode ficar em branco.
+produto.id.duplicado=Já existe um produto com o ID %s. Use outro ID.
+produto.nome=Nome do Produto:
+produto.nome.invalido=O nome não pode ficar em branco nem conter vírgula.
+produto.preco=Preço do Produto (ex.: 1500,90):
+produto.preco.invalido=O preço precisa ser maior que zero.
+produto.quantidade=Quantidade inicial em estoque:
+produto.quantidade.invalida=A quantidade não pode ser negativa.
+produto.cadastrado=Produto cadastrado: %s - %s - estoque %d
+produto.nao.encontrado=Produto não encontrado.
+
+# ---- Lista de produtos
+produtos.filtro=Filtrar por nome (Enter para ver todos):
+produtos.titulo=Produtos
+produtos.vazio=Nenhum produto cadastrado ainda. Use a opção 1 do menu.
+produtos.nenhum.filtro=Nenhum produto com "%s" no nome.
+produtos.exibidos=%d produto(s) exibido(s) de %d cadastrado(s).
+
+# ---- Pessoas
+pessoa.id=ID da Pessoa:
+pessoa.id.duplicado=Já existe uma pessoa com o ID %s. Cadastro cancelado.
+pessoa.nome=Nome da Pessoa:
+pessoa.tipo=Tipo de Pessoa (1-Cliente, 2-Fornecedor, 3-Funcionário):
+pessoa.opcao.invalida=Opção inválida. Digite 1, 2 ou 3.
+pessoa.baselegal=Base Legal (1-Consentimento, 2-Execução de Contrato, 3-Obrigação Legal):
+pessoa.baselegal.1=Consentimento
+pessoa.baselegal.2=Execução de Contrato
+pessoa.baselegal.3=Obrigação Legal
+pessoa.baselegal.0=Não informado
+pessoa.cadastrada=Pessoa adicionada com sucesso.
+pessoa.nao.encontrada=Pessoa não encontrada.
+pessoa.anonimizar.id=ID da Pessoa a anonimizar:
+pessoa.anonimizada=Dados da pessoa anonimizados com sucesso.
+pessoas.titulo=Pessoas
+pessoas.vazio=Nenhuma pessoa cadastrada.
+pessoa.linha=%s - %s - Tipo: %s - Base legal: %s
+pessoa.tipo.1=Cliente
+pessoa.tipo.2=Fornecedor
+pessoa.tipo.3=Funcionário
+pessoa.pedir.1=ID do cliente:
+pessoa.pedir.2=ID do fornecedor:
+pessoa.pedir.3=ID do funcionário:
+
+# ---- Compra do fornecedor
+compra.produto.id=ID do Produto a comprar:
+compra.fornecedor.nao.encontrado=Fornecedor não encontrado.
+compra.quantidade=Quantidade comprada:
+compra.quantidade.invalida=Quantidade inválida.
+compra.custo=Custo unitário pago ao fornecedor:
+compra.custo.invalido=Custo inválido.
+compra.registrada=Compra registrada. Estoque atual: %d
+compra.titulo.gerado=Título a pagar gerado: %s
+
+# ---- Ponto de venda
+venda.titulo=Ponto de venda
+venda.cliente.nao.encontrado=Cliente não encontrado.
+venda.cabecalho=%s | cliente ID %s | %s
+venda.instrucao=Digite o ID do produto, R para remover um item ou FIM para fechar o pedido.
+venda.letra.fim=FIM
+venda.letra.remover=R
+venda.prompt=>
+venda.remover.id=ID do produto a remover do pedido:
+venda.item.removido=Item removido. Total parcial: %s
+venda.item.inexistente=Esse produto não está no pedido.
+venda.produto.nao.encontrado=Produto não encontrado. Confira o ID na opção 2 do menu.
+venda.quantidade=Quantidade de %s:
+venda.quantidade.invalida=Quantidade inválida.
+venda.estoque.insuficiente=Estoque insuficiente de %s. Disponível: %d
+venda.item.adicionado=%dx %s | total parcial: %s
+venda.sem.itens=Pedido cancelado: nenhum produto foi adicionado.
+venda.confirmar=Confirmar a venda? (S/N):
+venda.letra.sim=S
+venda.cancelada=Venda cancelada. Nada foi alterado no estoque.
+venda.finalizada=%s finalizado! Total: %s
+venda.titulo.gerado=Título a receber gerado: %s
+
+# ---- Pedido
+pedido.resumo.titulo=Resumo do %s
+pedido.total=TOTAL DO PEDIDO
+pedido.produto.sumiu=(produto não encontrado)
+
+# ---- Lista de pedidos
+pedidos.titulo=Pedidos
+pedidos.vazio=Nenhum pedido registrado.
+pedidos.linha=%s | %s | cliente ID %s | %d item(ns) | %s
+pedidos.item=%dx %s - %s
+pedidos.pagina=Página %d de %d - %d pedido(s) no total.
+pedidos.proxima=Enter para a próxima página ou F para voltar ao menu:
+pedidos.letra.fim=F
+
+# ---- Relatorio de inventario
+relatorio.titulo=Relatório de inventário
+relatorio.vazio=Nenhum produto cadastrado ainda.
+relatorio.situacao.ok=OK
+relatorio.situacao.zerado=ZERADO - repor já
+relatorio.situacao.baixo=BAIXO
+relatorio.criticos=Mostrando os %d produtos mais críticos de %d.
+relatorio.cadastrados=Produtos cadastrados
+relatorio.reposicao=Precisam de reposição
+relatorio.reposicao.valor=%d (sendo %d zerado(s))
+relatorio.valor.total=Valor total do inventário
+
+# ---- Titulos
+titulos.titulo=Títulos em aberto
+titulos.linha=%s - %s - Pessoa: %s - Tipo: %s
+titulos.vazio=Nenhum título em aberto.
+titulo.tipo.receber=a receber
+titulo.tipo.pagar=a pagar
+
+# ---- Pagamento
+pagamento.id=ID do Título a pagar:
+pagamento.ja.pago=Título já está pago. Pagamento repetido não realizado.
+pagamento.ok=Título pago com sucesso.
+pagamento.nao.encontrado=Título não encontrado.
+
+# ---- Previsao de demanda
+previsao.id=ID do Produto para prever demanda:
+previsao.linha.invalida=Aviso: linha de histórico ignorada por formato inválido.
+previsao.sem.historico=Ainda não há histórico suficiente para prever a demanda desse produto (é preciso vendas em pelo menos 2 dias diferentes).
+previsao.estavel=Tendência de vendas: estável.
+previsao.tendencia=Tendência de vendas: %s de aproximadamente %s unidades/dia.
+previsao.crescimento=crescimento
+previsao.queda=queda
+previsao.amanha=Previsão de demanda para amanhã: %s unidades.
+
+# ---- Usuarios
+usuario.novo.login=Novo login:
+usuario.duplicado=Já existe um usuário com esse login.
+usuario.senha=Senha (mínimo 6 caracteres):
+usuario.senha.curta=Senha inválida. A senha deve ter pelo menos 6 caracteres.
+usuario.papel.invalido=Opção inválida. Digite 1 ou 2.
+usuario.cadastrado=Usuário '%s' cadastrado como %s.
+usuarios.recriados=Aviso: arquivo de usuários não encontrado. Usuários padrão recriados - avise o administrador.
+
+# ---- Teste de desempenho
+desempenho.titulo=Teste de desempenho
+desempenho.gerando=Gerando %d produtos de teste na memória (seus arquivos não mudam)...
+desempenho.lista=%d buscas percorrendo a lista (antigo):
+desempenho.indice=%d buscas pelo índice HashMap (novo):
+desempenho.concat=Texto de 20.000 itens com += (antigo):
+desempenho.builder=Texto de 20.000 itens com StringBuilder (novo):
+desempenho.conferencia=Produtos encontrados nos dois métodos: %d / %d (os resultados são iguais, só o tempo muda)
+desempenho.tamanhos=Tamanhos conferidos: %d / %d caracteres
+
+# ---- Tela grafica (Swing)
+tela.titulo=ERP Didático 2026 - Consulta de produtos
+tela.buscar=Buscar por nome ou ID:
+tela.filtrar=Filtrar
+tela.rodape=%d de %d produtos | busca e montagem da tabela: %s ms
+tela.col.id=ID
+tela.col.produto=Produto
+tela.col.preco=Preço
+tela.col.estoque=Estoque
+tela.aberta=Janela aberta. O menu do console continua funcionando aqui.
+tela.montar=montar a tela de consulta
+
+# ---- Avisos do sistema
+console.int.invalido=Digite um número inteiro (ex.: 10).
+console.decimal.invalido=Digite um valor como 1500 ou 1500,90.
+# ---- Inteligencia artificial (Desafio 8)
+ia.categoria.gravada=Categoria gravada: %s
+ia.sugestao=Sugestão da IA: %s (%s%% de certeza, %d ms)
+ia.indisponivel=Classificação automática indisponível (%s). Informe manualmente.
+ia.confirmar=Categoria (Enter aceita a sugestão):
+ia.erro.modelo=modelo não treinado
+ia.erro.amostra=amostra de treino não encontrada (rode o ExportadorAmostra)
+ia.erro.servidor=sem resposta do servidor de classificação
+ia.erro.interrompida=chamada interrompida
+ia.erro.limite=tempo limite de %d ms estourado
+ia.metrica.gravar=Não foi possível gravar a métrica de classificação.
+ia.metrica.ler=Não foi possível ler o arquivo %s.
+ia.tela.titulo=ERP Didático 2026 - Cadastro inteligente
+ia.tela.aba.produto=Produto
+ia.tela.aba.cliente=Cliente
+ia.categoria=Categoria:
+ia.segmento=Segmento:
+ia.cliente.pedidos=Nº de pedidos:
+ia.cliente.valor=Valor total comprado:
+ia.botao.sugerir=Sugerir com IA
+ia.botao.salvar=Salvar
+ia.botao.historico=Buscar histórico
+ia.falta.dados=Preencha os campos corretamente antes de continuar.
+ia.salvo.produto=Produto '%s' salvo na categoria: %s
+ia.salvo.cliente=Cliente '%s' salvo no segmento: %s
+ia.historico.carregado=Histórico carregado: %d pedidos, total de %s
+ia.cliente.sem.historico=Cliente sem pedidos: a sugestão é apenas o palpite mais comum.
+
+ia.relatorio.titulo=Relatório da classificação inteligente
+ia.relatorio.vazio=Ainda não há classificações registradas.
+ia.relatorio.chamadas=Chamadas ao serviço
+ia.relatorio.aceitas=Sugestões aceitas
+ia.relatorio.corrigidas=Sugestões corrigidas
+ia.relatorio.falhas=Falhas do serviço
+ia.relatorio.disponibilidade=Disponibilidade do serviço
+ia.relatorio.aceitacao=Taxa de aceitação
+ia.relatorio.conf.aceitas=Confiança média (aceitas)
+ia.relatorio.conf.corrigidas=Confiança média (corrigidas)
+ia.relatorio.col.sugestao=Sugestão
+ia.relatorio.col.aceitas=Aceitas
+ia.relatorio.col.corrigidas=Corrigidas
+ia.relatorio.col.taxa=Taxa
+ia.relatorio.poucos=Poucas classificações para concluir algo (mínimo: %d).
+ia.relatorio.retreinar=Taxa de aceitação abaixo de %s%%. Vale retreinar o modelo.
+ia.relatorio.saudavel=Taxa de aceitação acima de %s%%. Modelo saudável.
+vendas.historico.erro=Erro ao registrar histórico de vendas: %s
+# ---------------------------------------------------------------- DESAFIO 9: estrutura projetizada
+menu.grupo.projetos=PROJETOS
+menu.18=Cadastrar projeto [Admin]
+menu.19=Equipe do projeto
+menu.20=Solicitar aprovação
+menu.21=Aprovar / rejeitar
+menu.22=Desempenho por projeto
+menu.23=Hierarquia e papéis [Admin]
+papel.admin=Administrador
+papel.operador=Operador
+papel.lider=Líder de projeto
+papel.membro=Membro de projeto
+usuario.papel=Papel (1-Admin, 2-Operador, 3-Líder, 4-Membro):
+perm.so.admin.projeto=Só o Administrador cria projetos.
+perm.so.admin.hierarquia=O organograma é restrito ao Administrador.
+perm.nao.e.lider=Você não é o líder deste projeto.
+perm.fora.do.projeto=Você não faz parte da equipe deste projeto.
+perm.projeto.inexistente=Projeto não encontrado.
+perm.projeto.encerrado=Projeto encerrado: não aceita novas solicitações.
+perm.solicitacao.inexistente=Solicitação não encontrada.
+perm.ja.decidida=Esta solicitação já foi decidida.
+perm.proprio.pedido=Você não pode aprovar o que você mesmo pediu (regra dos quatro olhos).
+perm.acima.do.teto=Valor acima do teto do líder: a decisão sobe para o Administrador.
+projeto.cadastro.titulo=Cadastro de projeto
+projeto.id=ID do Projeto:
+projeto.id.invalido=O ID não pode ficar em branco nem conter vírgula.
+projeto.id.duplicado=Já existe um projeto com o ID %s.
+projeto.nome=Nome do Projeto:
+projeto.nome.invalido=O nome não pode ficar em branco nem conter vírgula.
+projeto.lider=Login do líder do projeto:
+projeto.lider.inexistente=Usuário "%s" não existe. Cadastre pela opção 11.
+projeto.orcamento=Orçamento do projeto:
+projeto.orcamento.invalido=O orçamento precisa ser maior que zero.
+projeto.cadastrado=Projeto "%s" criado sob liderança de %s.
+projeto.equipe.titulo=Equipe do projeto
+projeto.equipe.atual=Equipe atual: %s
+projeto.membro.login=Login para incluir ou remover (Enter para sair):
+projeto.membro.inexistente=Usuário "%s" não existe.
+projeto.membro.adicionado=%s entrou na equipe do projeto.
+projeto.membro.removido=%s saiu da equipe do projeto.
+projeto.orcamento.estourado=Orçamento estourado: gasto %s de %s.
+projeto.relatorio.titulo=Desempenho por projeto
+projeto.relatorio.vazio=Nenhum projeto cadastrado ainda. Use a opção 18.
+projeto.relatorio.nenhum.seu=Você não participa de nenhum projeto.
+projeto.relatorio.rodape=%d de %d projeto(s) exibido(s).
+projeto.alerta.estouro=%s passou do orçamento.
+projeto.alerta.atencao=%s já consumiu mais de 80%% do orçamento.
+projeto.col.id=ID
+projeto.col.nome=PROJETO
+projeto.col.lider=LÍDER
+projeto.col.orcamento=ORÇAMENTO
+projeto.col.gasto=GASTO
+projeto.col.consumo=CONSUMO
+projeto.col.pend=PEND.
+aprovacao.solicitar.titulo=Nova solicitação
+aprovacao.tipo=Tipo (1-Orçamento, 2-Compra):
+aprovacao.tipo.orcamento=Orçamento
+aprovacao.tipo.compra=Compra
+aprovacao.descricao=Descrição:
+aprovacao.valor=Valor:
+aprovacao.valor.invalido=O valor precisa ser maior que zero.
+aprovacao.criada=Solicitação %s criada. Decisão com %s.
+aprovacao.acima.teto=Valor acima de %s: vai precisar do Administrador.
+aprovacao.decidir.titulo=Decidir solicitações
+aprovacao.nada.pendente=Nenhuma solicitação pendente para você decidir.
+aprovacao.id=ID da solicitação:
+aprovacao.confirmar=Aprovar? (S/N):
+aprovacao.aprovada=Solicitação %s aprovada.
+aprovacao.rejeitada=Solicitação %s rejeitada.
+aprovacao.status.pendente=Pendente
+aprovacao.status.aprovada=Aprovada
+aprovacao.status.rejeitada=Rejeitada
+aprovacao.col.id=ID
+aprovacao.col.projeto=PROJETO
+aprovacao.col.tipo=TIPO
+aprovacao.col.valor=VALOR
+aprovacao.col.solicitante=SOLICITANTE
+aprovacao.col.descricao=DESCRIÇÃO
+hierarquia.titulo=Hierarquia e papéis
+hierarquia.col.usuario=USUÁRIO
+hierarquia.col.funcional=GER. FUNCIONAL
+hierarquia.col.projeto=GER. DE PROJETO
+hierarquia.col.papel=PAPEL
+hierarquia.col.destino=NA NOVA ESTRUTURA
+hierarquia.total=Usuários cadastrados
+hierarquia.duplos=Com duplo reporte (matricial)
+hierarquia.sem.duplos=Nenhum duplo reporte: a migração para a estrutura projetizada está concluída.
+hierarquia.acao=%d pessoa(s) ainda respondem a dois chefes. Consolide antes de encerrar a transição.
+hierarquia.destino.lider=Líder do projeto %s
+hierarquia.destino.membro=Responde ao líder %s
+hierarquia.destino.sem.projeto=Sem projeto: precisa de alocação
+
+# ---- traducao dos valores gravados (continuacao da adequacao ao alemao)
+categoria.celular=Celular
+categoria.notebook=Notebook
+categoria.monitor=Monitor
+categoria.periferico=Periférico
+categoria.mobiliario=Mobiliário
+categoria.papelaria=Papelaria
+segmento.varejo=Varejo
+segmento.atacado=Atacado
+segmento.corporativo=Corporativo

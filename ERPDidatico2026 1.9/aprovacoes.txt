@@ -1,0 +1,1 @@
+6b234532,1,COMPRA,12.00,admin,PENDENTE,2026-10-21 11:49,,Compra de um tranformador

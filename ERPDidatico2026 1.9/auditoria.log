@@ -1,0 +1,47 @@
+[2026-10-19 16:14:58] Usuário=admin - LOGIN - Papel=Admin, Idioma=pt
+[2026-10-19 16:15:18] Usuário=admin - TROCA_IDIOMA - Novo=de
+[2026-10-19 16:16:38] Usuário=admin - COMPRA - Produto=3, Qtd=2, Fornecedor=2
+[2026-10-19 16:16:45] Usuário=admin - RELATORIO_INVENTARIO - Produtos=50, Alertas=49
+[2026-10-19 16:29:30] Usuário=Sampaio - LOGIN_FALHOU - Tentativa de login inválida
+[2026-10-19 16:29:40] Usuário=admin - LOGIN - Papel=Admin, Idioma=de
+[2026-10-19 16:30:12] Usuário=admin - TROCA_IDIOMA - Novo=pt
+[2026-10-19 16:30:43] Usuário=admin - LOGIN - Papel=Admin, Idioma=pt
+[2026-10-19 16:31:13] Usuário=admin - LOGIN - Papel=Admin, Idioma=pt
+[2026-10-19 16:35:54] Usuário=admin - LOGIN - Papel=Admin, Idioma=pt
+[2026-10-19 16:36:52] Usuário=admin - LOGIN - Papel=Admin, Idioma=pt
+[2026-10-19 16:39:19] Usuário=admin - LOGIN - Papel=Admin, Idioma=pt
+[2026-10-19 16:39:50] Usuário=admin - TROCA_IDIOMA - Novo=de
+[2026-10-19 16:40:11] Usuário=admin - COMPRA - Produto=3, Qtd=3, Fornecedor=2
+[2026-10-19 16:40:14] Usuário=admin - RELATORIO_INVENTARIO - Produtos=50, Alertas=49
+[2026-10-19 16:42:05] Usuário=admin - TROCA_IDIOMA - Novo=pt
+[2026-10-19 16:42:28] Usuário=admin - LOGIN - Papel=Admin, Idioma=pt
+[2026-10-20 10:42:28] Usuário=admin - LOGIN - Papel=Admin, Idioma=pt
+[2026-10-20 10:44:37] Usuário=admin - LOGIN - Papel=Admin, Idioma=pt
+[2026-10-20 10:57:14] Usuário=admin - LOGIN - Papel=Admin, Idioma=pt
+[2026-10-20 10:57:48] Usuário=admin - LOGIN - Papel=Admin, Idioma=pt
+[2026-10-20 10:59:06] Usuário=admin - LOGIN - Papel=Admin, Idioma=pt
+[2026-10-20 11:00:24] Usuário=admin - TROCA_IDIOMA - Novo=de
+[2026-10-20 11:00:36] Usuário=admin - TROCA_IDIOMA - Novo=de
+[2026-10-20 11:11:34] Usuário=admin - LOGIN - Papel=Admin, Idioma=de
+[2026-10-20 11:12:41] Usuário=admin - TROCA_IDIOMA - Novo=pt
+[2026-10-20 11:13:57] Usuário=admin - LOGIN - Papel=Admin, Idioma=pt
+[2026-10-21 11:39:25] Usuário=admin - LOGIN - Papel=Admin, Idioma=pt
+[2026-10-21 11:40:45] Usuário=admin - LOGIN - Papel=Admin, Idioma=pt
+[2026-10-21 11:43:09] Usuário=admin - LOGIN - Papel=Admin, Idioma=pt
+[2026-10-21 11:43:59] Usuário=admin - LOGIN - Papel=Admin, Idioma=pt
+[2026-10-21 11:46:14] Usuário=admmin - LOGIN_FALHOU - Tentativa de login inválida
+[2026-10-21 11:46:22] Usuário=admin - LOGIN - Papel=Admin, Idioma=pt
+[2026-10-21 11:48:17] Usuário=admin - CADASTRO_PROJETO - ID=1, Lider=mauricio, Orcamento=34.00
+[2026-10-21 11:49:12] Usuário=admin - SOLICITACAO_APROVACAO - ID=6b234532, Projeto=1, Valor=12.00
+[2026-10-21 11:49:58] Usuário=admin - LOGIN_FALHOU - Tentativa de login inválida
+[2026-10-21 11:50:12] Usuário=admin - LOGIN - Papel=Admin, Idioma=pt
+[2026-10-21 11:50:15] Usuário=admin - RELATORIO_PROJETOS - Projetos=1
+[2026-10-21 11:50:40] Usuário=admin - TROCA_IDIOMA - Novo=de
+[2026-10-21 11:51:18] Usuário=admin - LOGIN - Papel=Admin, Idioma=de
+[2026-10-21 11:51:40] Usuário=admin - RELATORIO_PROJETOS - Projetos=1
+[2026-10-21 11:51:53] Usuário=admin - TROCA_IDIOMA - Novo=pt
+[2026-10-21 11:54:08] Usuário=admin - LOGIN - Papel=Admin, Idioma=pt
+[2026-10-21 11:54:19] Usuário=admin - RELATORIO_HIERARQUIA - Duplos=0
+[2026-10-21 11:55:39] Usuário=admin - LOGIN - Papel=Admin, Idioma=pt
+[2026-10-21 11:55:41] Usuário=admin - TROCA_IDIOMA - Novo=de
+[2026-10-21 11:55:44] Usuário=admin - RELATORIO_HIERARQUIA - Duplos=0

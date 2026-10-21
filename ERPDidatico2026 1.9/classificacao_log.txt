@@ -1,0 +1,5 @@
+2026-10-20 10:59:49,PRODUTO,2,-,0.000,-,FALHA(amostra de treino não encontrada (rode o ExportadorAmostra))
+2026-10-20 10:59:50,PRODUTO,2,-,0.000,-,FALHA(modelo não treinado)
+2026-10-20 10:59:50,PRODUTO,2,-,0.000,-,FALHA(modelo não treinado)
+2026-10-20 10:59:51,PRODUTO,2,-,0.000,-,FALHA(modelo não treinado)
+2026-10-20 10:59:51,PRODUTO,2,-,0.000,-,FALHA(modelo não treinado)
